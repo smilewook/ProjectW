@@ -2,6 +2,11 @@
 
 #include "WCharacter.h"
 #include "WCharacterAnimInstance.h"
+#include "WCharacterStatComponent.h"
+#include "WWeapon.h"
+#include "WCharacterWidget.h"
+#include "DrawDebugHelpers.h"
+#include "Components/WidgetComponent.h"
 
 
 // Sets default values
@@ -12,9 +17,12 @@ AWCharacter::AWCharacter()
 
 	mpSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	mpCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
+	CharacterStat = CreateDefaultSubobject<UWCharacterStatComponent>(TEXT("CHARACTERSTAT"));
+	mpHPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 
 	mpSpringArm->SetupAttachment(GetCapsuleComponent());
 	mpCamera->SetupAttachment(mpSpringArm);
+	mpHPBarWidget->SetupAttachment(GetMesh());
 
 	// 카메라 구도
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
@@ -39,7 +47,6 @@ AWCharacter::AWCharacter()
 
 	// 게임 화면 카메라 모드
 	SetControlMode(EControlMode::DIABLO);
-
 	// 카메라 이동 속도
 	mArmLengthSpeed = 3.0f;
 	// 카메라 회전 속도
@@ -51,6 +58,22 @@ AWCharacter::AWCharacter()
 	// 공격 콤보
 	mMaxCombo = 2;
 	AttackEndComboState();
+	// 콜리전 프리셋
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("WCharacter"));
+	// 공격 범위 디버깅
+	mAttackRange = 200.0f;
+	mAttackRadius = 50.0f;
+
+	// UIWidget - HPBar.
+	mpHPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	mpHPBarWidget->SetWidgetSpace(EWidgetSpace::Screen); // 항상 스크린을 보도록
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBAR(TEXT("/Game/Widgets/WB_HPBar.WB_HPBar_C"));
+	if (UI_HPBAR.Succeeded())
+	{
+		mpHPBarWidget->SetWidgetClass(UI_HPBAR.Class);
+		mpHPBarWidget->SetDrawSize(FVector2D(150.0f, 50.0f));
+	}
+
 }
 
 // Called every frame
@@ -92,6 +115,14 @@ void AWCharacter::PostInitializeComponents()
 			mCharacterAnim->JumpToAttackMontageSection(mCurrentCombo);
 		}
 	});
+
+	mCharacterAnim->OnAttackHitCheck.AddUObject(this, &AWCharacter::AttackCheck);
+
+	CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
+		mCharacterAnim->SetDeadAnim();
+		SetActorEnableCollision(false);
+	});
+
 }
 
 // Called to bind functionality to input
@@ -109,11 +140,44 @@ void AWCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputCompone
 	pPlayerInputComponent->BindAxis(TEXT("Turn"), this, &AWCharacter::Turn);
 }
 
+float AWCharacter::TakeDamage(float damage, FDamageEvent const & damageEvent, AController * eventInstigator, AActor * damageCauser)
+{
+	float finalDamage = Super::TakeDamage(damage, damageEvent, eventInstigator, damageCauser);
+	WLOG(Warning, TEXT("Player :  %s took Damage : %f"), *GetName(), finalDamage);
+
+	CharacterStat->SetDamage(finalDamage);
+	return finalDamage;
+}
+
+bool AWCharacter::CanSetWeapon()
+{
+	return (nullptr == mpCurrentWeapon);
+}
+
+void AWCharacter::SetWeapon(AWWeapon * pNewWeapon)
+{
+	WCHECK(nullptr != pNewWeapon && nullptr == mpCurrentWeapon);
+	FName weaponSocket(TEXT("hand_rSocket"));
+	if (nullptr != pNewWeapon)
+	{
+		pNewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, weaponSocket);
+		pNewWeapon->SetOwner(this);
+		mpCurrentWeapon = pNewWeapon;
+	}
+}
+
 // Called when the game starts or when spawned
 void AWCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// null 로 찍힘..PostInitializeComponents 에서도 null 이었는데..
+// 	auto characterWidget = Cast<UWCharacterWidget>(mpHPBarWidget->GetUserWidgetObject());
+// 	WCHECK(nullptr != characterWidget);
+// 	if (nullptr != characterWidget)
+// 	{
+// 		characterWidget->BindCharacterStat(CharacterStat);
+// 	}
 }
 
 void AWCharacter::SetControlMode(EControlMode controlMode)
@@ -256,9 +320,53 @@ void AWCharacter::AttackStartComboState()
 
 void AWCharacter::AttackEndComboState()
 {
-	WLOG(Warning, TEXT("AttackEndComboState"));
 	mIsComboInputOn = false;
 	mCanNextCombo = false;
 	mCurrentCombo = 0;
+}
+
+void AWCharacter::AttackCheck()
+{
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		hitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * mAttackRange,
+		FQuat::Identity,
+		ECollisionChannel::ECC_EngineTraceChannel2,
+		FCollisionShape::MakeSphere(50.0f),
+		params);
+
+#if ENABLE_DRAW_DEBUG
+
+	FVector traceVec = GetActorForwardVector() * mAttackRange;
+	FVector center = GetActorLocation() + traceVec * 0.5f;
+	float halfHeight = mAttackRange * 0.5f + mAttackRadius;
+	FQuat capsuleRot = FRotationMatrix::MakeFromZ(traceVec).ToQuat();
+	FColor drawColor = bResult ? FColor::Green : FColor::Red;
+	float debugLifeTime = 5.0f;
+
+	DrawDebugCapsule(GetWorld(),
+		center,
+		halfHeight,
+		mAttackRadius,
+		capsuleRot,
+		drawColor,
+		false,
+		debugLifeTime);
+
+#endif
+
+	if (bResult)
+	{
+		if (hitResult.Actor.IsValid())
+		{
+			WLOG(Warning, TEXT("Hit Actor Name : %s"), *hitResult.Actor->GetName());
+
+ 			FDamageEvent damageEvent;
+ 			hitResult.Actor->TakeDamage(CharacterStat->GetAttack(), damageEvent, GetController(), this);
+		}
+	}
 }
 

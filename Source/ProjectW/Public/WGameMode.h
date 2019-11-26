@@ -14,7 +14,9 @@ class PROJECTW_API AWGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+	/* Method */
 public:
 	AWGameMode();
 
+	/* Properties */
 };

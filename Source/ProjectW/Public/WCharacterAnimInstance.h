@@ -17,6 +17,7 @@ class PROJECTW_API UWCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+	/* Method */
 public:
 	UWCharacterAnimInstance();
 
@@ -24,7 +25,8 @@ public:
 	void PlayAttackMontage();
 	void JumpToAttackMontageSection(int32 newSection);
 
-public:
+	void SetDeadAnim() { mIsDead = true; }
+
 	FOnNextAttackCheckDelegate	OnNextAttackCheck;
 	FOnAttackHitCheckDelegate	OnAttackHitCheck;
 
@@ -37,12 +39,18 @@ private:
 
 	FName GetAttackMontageSectionName(int32 section);
 
+	/* Properties */
+public:
+	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float mCurrentSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool mIsInAir;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool mIsDead;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* mpAttackMontage;

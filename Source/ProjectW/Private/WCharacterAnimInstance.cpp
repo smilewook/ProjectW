@@ -7,6 +7,7 @@ UWCharacterAnimInstance::UWCharacterAnimInstance()
 {
 	mCurrentSpeed = 0.0f;
 	mIsInAir = false;
+	mIsDead = false;
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animations/SK_Mannequin_Skeleton_Montage.SK_Mannequin_Skeleton_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
@@ -21,7 +22,9 @@ void UWCharacterAnimInstance::NativeUpdateAnimation(float deltaSeconds)
 
 	// 폰에 접근해서 폰의 속력 값을 얻어온다.
 	auto pawn = TryGetPawnOwner();
-	if (::IsValid(pawn))
+	if (false == ::IsValid(pawn)) return;
+
+	if (false == mIsDead)
 	{
 		mCurrentSpeed = pawn->GetVelocity().Size();
 		auto character = Cast<ACharacter>(pawn);
@@ -34,11 +37,13 @@ void UWCharacterAnimInstance::NativeUpdateAnimation(float deltaSeconds)
 
 void UWCharacterAnimInstance::PlayAttackMontage()
 {
+	WCHECK(false == mIsDead);
 	Montage_Play(mpAttackMontage, 1.0f);
 }
 
 void UWCharacterAnimInstance::JumpToAttackMontageSection(int32 newSection)
 {
+	WCHECK(false == mIsDead);
 	WCHECK(Montage_IsPlaying(mpAttackMontage));
 	Montage_JumpToSection(GetAttackMontageSectionName(newSection), mpAttackMontage);
 }

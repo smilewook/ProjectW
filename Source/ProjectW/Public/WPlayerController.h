@@ -14,7 +14,9 @@ class PROJECTW_API AWPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-	
+	/* Method */
 protected:
 	virtual void BeginPlay() override;
+
+	/* Properties */
 };

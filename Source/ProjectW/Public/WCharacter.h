@@ -18,6 +18,7 @@ class PROJECTW_API AWCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	/* Method */
 public:
 	// Sets default values for this character's properties
 	AWCharacter();
@@ -27,6 +28,11 @@ public:
 	virtual void PostInitializeComponents() override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* pPlayerInputComponent) override;
+	virtual float TakeDamage(float damage, struct FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
+	
+	bool CanSetWeapon();
+	void SetWeapon(class AWWeapon* pNewWeapon);
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,16 +54,28 @@ private:
 
 	void AttackStartComboState();
 	void AttackEndComboState();
+	void AttackCheck();
 
+	/* Properties */
 public:	
-	
+	UPROPERTY(VisibleAnywhere, Category = Stat)
+	class UWCharacterStatComponent* CharacterStat;
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	USkeletalMeshComponent* mpWeapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	class AWWeapon* mpCurrentWeapon;
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* mpSpringArm;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* mpCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* mpHPBarWidget;
 
 	EControlMode mCurrentControlMode = EControlMode::GTA;
 	FVector mDirectionToMove = FVector::ZeroVector;
@@ -85,5 +103,11 @@ private:
 
 	UPROPERTY()
 	class UWCharacterAnimInstance* mCharacterAnim;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	float mAttackRange;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	float mAttackRadius;
 
 };
