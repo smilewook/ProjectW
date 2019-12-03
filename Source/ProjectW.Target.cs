@@ -9,6 +9,6 @@ public class ProjectWTarget : TargetRules
 	{
 		Type = TargetType.Game;
 
-		ExtraModuleNames.AddRange( new string[] { "ProjectW" } );
+		ExtraModuleNames.AddRange( new string[] { "ProjectW", "ProjectWSetting" } );
 	}
 }
