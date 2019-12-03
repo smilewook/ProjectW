@@ -18,5 +18,12 @@ class PROJECTW_API AWGameMode : public AGameModeBase
 public:
 	AWGameMode();
 
+	virtual void PostInitializeComponents() override;
+	virtual void PostLogin(APlayerController* newPlayer) override;
+	void AddScore(class AWPlayerController* pPlayerController);
+
 	/* Properties */
+private:
+	UPROPERTY()
+	class AWGameState*  mpGameState;
 };

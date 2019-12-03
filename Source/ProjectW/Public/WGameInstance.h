@@ -5,6 +5,7 @@
 #include "ProjectW.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
+#include "Engine/StreamableManager.h"
 #include "WGameInstance.generated.h"
 
 /**
@@ -48,8 +49,9 @@ public:
 	UWGameInstance();
 
 	virtual void Init() override;
-
 	FWCharacterData* GetCharacterData(int32 level);
+
+	FStreamableManager StreamableManager;
 	
 	/* Properties */
 private:

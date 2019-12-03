@@ -9,6 +9,6 @@ public class ProjectWEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-		ExtraModuleNames.AddRange( new string[] { "ProjectW" } );
+		ExtraModuleNames.AddRange( new string[] { "ProjectW", "ProjectWSetting" } );
 	}
 }

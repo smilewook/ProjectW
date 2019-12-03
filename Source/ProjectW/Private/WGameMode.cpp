@@ -3,11 +3,48 @@
 
 #include "WGameMode.h"
 #include "WCharacter.h"
+#include "WGameState.h"
+#include "WPlayerCharacter.h"
 #include "WPlayerController.h"
+#include "WPlayerState.h"
+
 
 AWGameMode::AWGameMode()
 {
-	// 새로 만든 클래스로 교체.
-	DefaultPawnClass = AWCharacter::StaticClass();
+	//DefaultPawnClass = AWCharacter::StaticClass();
+	DefaultPawnClass = AWPlayerCharacter::StaticClass();
 	PlayerControllerClass = AWPlayerController::StaticClass();
+	PlayerStateClass = AWPlayerState::StaticClass();
+	GameStateClass = AWGameState::StaticClass();
+}
+
+void AWGameMode::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	mpGameState = Cast<AWGameState>(GameState);
+}
+
+void AWGameMode::PostLogin(APlayerController* newPlayer)
+{
+	Super::PostLogin(newPlayer);
+
+	auto playerState = Cast<AWPlayerState>(newPlayer->PlayerState);
+	WCHECK(nullptr != playerState);
+	playerState->InitPlayerData();
+}
+
+void AWGameMode::AddScore(AWPlayerController* pScoredPlayer)
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		const auto playerController = Cast<AWPlayerController>(It->Get());
+		if ((nullptr != playerController) && (pScoredPlayer == playerController))
+		{
+			playerController->AddGameScore();
+			break;
+		}
+	}
+
+	mpGameState->AddGameScore();
 }

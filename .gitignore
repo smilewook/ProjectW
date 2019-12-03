@@ -1,7 +1,10 @@
-/Saved
-/Intermediate
 /.vs
+/Binaries
+/Content
+/Intermediate
+/Saved
 /Build
 /Plugins
+
 *.sln
 *_BuiltData.uasset

@@ -2,15 +2,15 @@
 
 using UnrealBuildTool;
 
-public class ProjectW : ModuleRules
+public class ProjectWSetting : ModuleRules
 {
-	public ProjectW(ReadOnlyTargetRules Target) : base(Target)
+	public ProjectWSetting(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule", "NavigationSystem", "GameplayTasks" });
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "ProjectWSetting", "Slate", "SlateCore"});
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
+
+		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
