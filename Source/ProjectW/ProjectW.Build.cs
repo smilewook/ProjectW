@@ -10,7 +10,11 @@ public class ProjectW : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule", "NavigationSystem", "GameplayTasks" });
 
+<<<<<<< HEAD
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProjectWSetting", "Slate", "SlateCore"});
+=======
+		PrivateDependencyModuleNames.AddRange(new string[] { "ProjectWSetting" });
+>>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

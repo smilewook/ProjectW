@@ -2,19 +2,17 @@
 
 
 #include "WEnemy.h"
+#include "WCharacterAnimInstance.h"
+#include "WCharacterSetting.h"
+#include "WCharacterStatComponent.h"
+#include "WCharacterWidget.h"
 #include "WEnemyAIController.h"
 #include "WGameInstance.h"
-#include "Actors/WSpawnActor.h"
-#include "Items/WWeapon.h"
-#include "Player/WCharacterAnimInstance.h"
-#include "Player/WCharacterStatComponent.h"
-#include "Player/WPlayerController.h"
-#include "Widgets/WCharacterWidget.h"
-
-#include "WCharacterSetting.h"
-
-#include <DrawDebugHelpers.h>
-#include <Components/WidgetComponent.h>
+#include "WSpawnActor.h"
+#include "WPlayerController.h"
+#include "WWeapon.h"
+#include "DrawDebugHelpers.h"
+#include "Components/WidgetComponent.h"
 
 
 // Sets default values

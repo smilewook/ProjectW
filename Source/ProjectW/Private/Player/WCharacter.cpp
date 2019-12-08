@@ -4,6 +4,7 @@
 #include "WCharacterAnimInstance.h"
 #include "WCharacterSetting.h"
 #include "WCharacterStatComponent.h"
+<<<<<<< HEAD:Source/ProjectW/Private/Player/WCharacter.cpp
 #include "WPlayerController.h"
 #include "WPlayerState.h"
 #include "WGameInstance.h"
@@ -13,6 +14,16 @@
 
 #include <DrawDebugHelpers.h>
 #include <Components/WidgetComponent.h>
+=======
+#include "WCharacterWidget.h"
+#include "WGameInstance.h"
+#include "WHUDWidget.h"
+#include "WPlayerController.h"
+#include "WPlayerState.h"
+#include "WWeapon.h"
+#include "DrawDebugHelpers.h"
+#include "Components/WidgetComponent.h"
+>>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75:Source/ProjectW/Private/WCharacter.cpp
 
 
 // Sets default values

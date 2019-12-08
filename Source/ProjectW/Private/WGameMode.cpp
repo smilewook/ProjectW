@@ -2,17 +2,28 @@
 
 
 #include "WGameMode.h"
+<<<<<<< HEAD
 #include "WGameState.h"
 #include "Player/WCharacter.h"
 #include "Player/WPlayerCharacter.h"
 #include "Player/WPlayerController.h"
 #include "Player/WPlayerState.h"
+=======
+#include "WCharacter.h"
+#include "WGameState.h"
+#include "WPlayerController.h"
+#include "WPlayerState.h"
+>>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75
 
 
 AWGameMode::AWGameMode()
 {
+<<<<<<< HEAD
 	//DefaultPawnClass = AWCharacter::StaticClass();
 	DefaultPawnClass = AWPlayerCharacter::StaticClass();
+=======
+	DefaultPawnClass = AWCharacter::StaticClass();
+>>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75
 	PlayerControllerClass = AWPlayerController::StaticClass();
 	PlayerStateClass = AWPlayerState::StaticClass();
 	GameStateClass = AWGameState::StaticClass();
