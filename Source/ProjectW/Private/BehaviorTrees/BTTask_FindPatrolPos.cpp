@@ -2,9 +2,10 @@
 
 
 #include "BTTask_FindPatrolPos.h"
-#include "WEnemyAIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "NavigationSystem.h"
+#include "Enemies/WEnemyAIController.h"
+
+#include <BehaviorTree/BlackboardComponent.h>
+#include <NavigationSystem.h>
 
 
 UBTTask_FindPatrolPos::UBTTask_FindPatrolPos()

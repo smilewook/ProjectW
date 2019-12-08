@@ -3,7 +3,7 @@
 
 #include "WItemBox.h"
 #include "WWeapon.h"
-#include "WCharacter.h"
+#include "Player/WCharacter.h"
 
 
 // Sets default values

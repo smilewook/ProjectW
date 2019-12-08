@@ -2,8 +2,9 @@
 
 
 #include "WSpawnActor.h"
-#include "WEnemy.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Enemies/WEnemy.h"
+
+#include <Kismet/KismetMathLibrary.h>
 
 
 AWSpawnActor::AWSpawnActor()

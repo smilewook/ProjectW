@@ -2,10 +2,11 @@
 
 
 #include "WHUDWidget.h"
-#include "WCharacterStatComponent.h"
-#include "WPlayerState.h"
-#include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
+#include "Player/WCharacterStatComponent.h"
+#include "Player/WPlayerState.h"
+
+#include <Components/ProgressBar.h>
+#include <Components/TextBlock.h>
 
 
 void UWHUDWidget::BindCharacterStat(UWCharacterStatComponent* pCharacterStat)

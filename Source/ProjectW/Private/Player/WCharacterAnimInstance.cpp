@@ -3,6 +3,7 @@
 
 #include "WCharacterAnimInstance.h"
 
+
 UWCharacterAnimInstance::UWCharacterAnimInstance()
 {
 	mCurrentSpeed = 0.0f;

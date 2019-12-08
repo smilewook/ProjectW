@@ -3,9 +3,10 @@
 
 #include "WPlayerController.h"
 #include "WCharacter.h"
-#include "WEnemy.h"
-#include "WHUDWidget.h"
 #include "WPlayerState.h"
+#include "Enemies/WEnemy.h"
+#include "Widgets/WHUDWidget.h"
+
 
 
 AWPlayerController::AWPlayerController()

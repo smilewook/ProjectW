@@ -2,10 +2,11 @@
 
 
 #include "BTTaskNode_TurnToTarget.h"
-#include "WEnemyAIController.h"
-#include "WEnemy.h"
-#include "WCharacter.h"
-#include "BehaviorTree/BlackboardComponent.h"
+#include "Enemies/WEnemyAIController.h"
+#include "Enemies/WEnemy.h"
+#include "Player/WCharacter.h"
+
+#include <BehaviorTree/BlackboardComponent.h>
 
 
 UBTTaskNode_TurnToTarget::UBTTaskNode_TurnToTarget()

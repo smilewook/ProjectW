@@ -2,9 +2,10 @@
 
 
 #include "WInventoryManager.h"
-#include "WItemBase.h"
-#include "WPickupActor.h"
-#include "USerWidget.h"
+#include "Actors/WPickupActor.h"
+#include "Items/WItemBase.h"
+
+#include <UserWidget.h>
 
 
 UWInventoryManager::UWInventoryManager()

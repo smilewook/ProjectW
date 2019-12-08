@@ -2,11 +2,12 @@
 
 
 #include "WGameStage.h"
-#include "WCharacter.h"
-#include "WEnemy.h"
+#include "ProjectWEnums.h"
 #include "WGameMode.h"
-#include "WItemBox.h"
-#include "WPlayerController.h"
+#include "Enemies/WEnemy.h"
+#include "Items/WItemBox.h"
+#include "Player/WCharacter.h"
+#include "Player/WPlayerController.h"
 
 
 AWGameStage::AWGameStage()

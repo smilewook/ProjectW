@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actor/WPickupActor.h"
+#include "WPickupActor.h"
+#include "Items/WItemBase.h"
+#include "Managers/WInventoryManager.h"
 #include "Player/WCharacter.h"
 #include "Player/WPlayerCharacter.h"
-#include "Managers/WInventoryManager.h"
-#include "Items/WItemBase.h"
-#include "Widget/WPickupTextWidget.h"
+#include "Widgets/WPickupTextWidget.h"
 
-#include "TextBlock.h"
-#include "WidgetComponent.h"
+#include <TextBlock.h>
+#include <WidgetComponent.h>
 
 
 AWPickupActor::AWPickupActor()
@@ -121,7 +121,7 @@ void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
 void AWPickupActor::UnInteract()
 {
 	WLOG(Warning, TEXT("UnInteract PickupActor!!"));
-	//mpInteractionPlayer->DelTargetActor();
+	GetInteractionPlayer()->DelTargetActor();
 
 	//GetInteractionPlayer->SetTargetActor(nullptr);
 	//mpInteractionPlayer->SetTargetActor(nullptr);

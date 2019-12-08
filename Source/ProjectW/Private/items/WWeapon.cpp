@@ -3,6 +3,7 @@
 
 #include "WWeapon.h"
 
+
 AWWeapon::AWWeapon()
 {
  	PrimaryActorTick.bCanEverTick = false;

@@ -2,8 +2,9 @@
 
 
 #include "WCharacterWidget.h"
-#include "WCharacterStatComponent.h"
-#include "Components/ProgressBar.h"
+#include "Player/WCharacterStatComponent.h"
+
+#include <Components/ProgressBar.h>
 
 
 void UWCharacterWidget::BindCharacterStat(class UWCharacterStatComponent* pNewCharacterStat)

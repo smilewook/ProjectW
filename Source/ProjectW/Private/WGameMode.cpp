@@ -2,11 +2,11 @@
 
 
 #include "WGameMode.h"
-#include "WCharacter.h"
 #include "WGameState.h"
-#include "WPlayerCharacter.h"
-#include "WPlayerController.h"
-#include "WPlayerState.h"
+#include "Player/WCharacter.h"
+#include "Player/WPlayerCharacter.h"
+#include "Player/WPlayerController.h"
+#include "Player/WPlayerState.h"
 
 
 AWGameMode::AWGameMode()

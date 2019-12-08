@@ -2,8 +2,8 @@
 
 
 #include "WPlayerCharacter.h"
-#include "WInventoryManager.h"
-#include "WPickupActor.h"
+#include "Actors/WPickupActor.h"
+#include "Managers/WInventoryManager.h"
 
 
 AWPlayerCharacter::AWPlayerCharacter()

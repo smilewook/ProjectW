@@ -4,14 +4,15 @@
 #include "WCharacterAnimInstance.h"
 #include "WCharacterSetting.h"
 #include "WCharacterStatComponent.h"
-#include "WCharacterWidget.h"
-#include "WGameInstance.h"
-#include "WHUDWidget.h"
 #include "WPlayerController.h"
 #include "WPlayerState.h"
-#include "WWeapon.h"
-#include "DrawDebugHelpers.h"
-#include "Components/WidgetComponent.h"
+#include "WGameInstance.h"
+#include "Items/WWeapon.h"
+#include "Widgets/WCharacterWidget.h"
+#include "Widgets/WHUDWidget.h"
+
+#include <DrawDebugHelpers.h>
+#include <Components/WidgetComponent.h>
 
 
 // Sets default values

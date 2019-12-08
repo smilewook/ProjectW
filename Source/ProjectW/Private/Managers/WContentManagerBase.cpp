@@ -2,7 +2,8 @@
 
 
 #include "WContentManagerBase.h"
-#include "UserWidget.h"
+
+#include <UserWidget.h>
 
 
 UWContentManagerBase::UWContentManagerBase()

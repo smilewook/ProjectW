@@ -2,8 +2,8 @@
 
 
 #include "BTTask_Attack.h"
-#include "WEnemyAIController.h"
-#include "WEnemy.h"
+#include "Enemies/WEnemyAIController.h"
+#include "Enemies/WEnemy.h"
 
 
 UBTTask_Attack::UBTTask_Attack()
