@@ -2,18 +2,11 @@
 
 
 #include "BTService_Detect.h"
-<<<<<<< HEAD
 #include "Enemies/WEnemyAIController.h"
 #include "Player/WCharacter.h"
 
 #include <BehaviorTree/BlackboardComponent.h>
 #include <DrawDebugHelpers.h>
-=======
-#include "WEnemyAIController.h"
-#include "WCharacter.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "DrawDebugHelpers.h"
->>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75
 
 
 UBTService_Detect::UBTService_Detect()

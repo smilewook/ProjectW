@@ -2,18 +2,11 @@
 
 
 #include "BTDecorator_IsInAttackRange.h"
-<<<<<<< HEAD
 #include "Enemies/WEnemy.h"
 #include "Enemies/WEnemyAIController.h"
 #include "Player/WCharacter.h"
 
 #include <BehaviorTree/BlackboardComponent.h>
-=======
-#include "WEnemyAIController.h"
-#include "WCharacter.h"
-#include "WEnemy.h"
-#include "BehaviorTree/BlackboardComponent.h"
->>>>>>> 6972ec496f6ca236699b21ab042b35610df03a75
 
 
 UBTDecorator_IsInAttackRange::UBTDecorator_IsInAttackRange()
