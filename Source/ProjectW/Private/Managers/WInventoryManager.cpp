@@ -13,34 +13,52 @@ UWInventoryManager::UWInventoryManager()
 	
 }
 
-void UWInventoryManager::InitWidget(UUserWidget* pWidget)
+void UWInventoryManager::BeginPlay()
 {
+
+}
+
+void UWInventoryManager::InitWidget(UWContentWidgetBase* pWidget)
+{
+	UWContentManagerBase::InitWidget(pWidget);
+
+	// 슬롯 초기화.
 }
 
 void UWInventoryManager::UpdateWidget()
 {
 }
 
-int32 UWInventoryManager::AddItem(const TSubclassOf<class AWItemBase>& itemClass, int32 amount)
+void UWInventoryManager::AddItem(int32 slotIndex)
 {
-	items.Add(itemClass->GetName());
+	// 아이템 추가.
+}
 
-	return items.Num();
+void UWInventoryManager::RemoveItem(int32 slotIndex)
+{
+	// 아이템 제거.
+}
+
+void UWInventoryManager::MoveItem(int32 targetSlotIndex, int32 fromSlotIndex)
+{
+	// 아이템 이동.
+}
+
+void UWInventoryManager::SwapItem(int32 targetSlotIndex, int32 fromSlotIndex)
+{
+	// 아이템 위치 교체.
+}
+
+void UWInventoryManager::CombineItem(int32 targetSlotIndex, int32 fromSlotIndex)
+{
+	// 아이템 합치기. 스택쌓기.
 }
 
 void UWInventoryManager::PrintInventory()
 {
 	FString sInventory = TEXT("");
 
-	for (auto item : items)
-	{
-		sInventory.Append(item);
-		sInventory.Append(TEXT(" . "));
-	}
-
 	GEngine->AddOnScreenDebugMessage(1, 3, FColor::White, sInventory);
 }
 
-void UWInventoryManager::BeginPlay()
-{
-}
+

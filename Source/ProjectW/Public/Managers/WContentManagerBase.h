@@ -6,7 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "WContentManagerBase.generated.h"
 
-class UUserWidget;
+
+class UWContentWidgetBase;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTW_API UWContentManagerBase : public UActorComponent
@@ -17,14 +19,14 @@ class PROJECTW_API UWContentManagerBase : public UActorComponent
 public:	
 	UWContentManagerBase();
 
-	virtual void InitWidget(UUserWidget* pWidget);
+	virtual void InitWidget(UWContentWidgetBase* pWidget);
 	virtual void UpdateWidget();
 
 	virtual void OpenWidget();
 	virtual void CloseWidget();
 
 	/* Get/Set */
-	FORCEINLINE UUserWidget* const& GetWidget() const { return mpWidget; }
+	FORCEINLINE UWContentWidgetBase* const& GetWidget() const { return mpWidget; }
 	FORCEINLINE const bool& GetIsOpenWidget() const { return mIsOpenWidget; }
 
 protected:
@@ -34,7 +36,7 @@ protected:
 public:	
 	
 protected:
-	UUserWidget* mpWidget;
+	UWContentWidgetBase* mpWidget;
 
 	bool mIsOpenWidget;
 		

@@ -2,6 +2,7 @@
 
 
 #include "WContentManagerBase.h"
+#include "Widgets/WContentWidgetBase.h"
 
 #include <UserWidget.h>
 
@@ -19,7 +20,7 @@ void UWContentManagerBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UWContentManagerBase::InitWidget(UUserWidget* pWidget)
+void UWContentManagerBase::InitWidget(UWContentWidgetBase* pWidget)
 {
 	if (nullptr != pWidget)
 	{

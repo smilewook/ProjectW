@@ -33,7 +33,7 @@ public:
 	/* Set */
 	FORCEINLINE void SetAmount(int amount) { mAmount = amount; }
 	FORCEINLINE void SetHasPickupCommand(bool hasCommand) { mHasPickupCommand = hasCommand; }
-	FORCEINLINE void SetInteractionPlayer(class AWPlayerCharacter* pPlayer) { mpInteractionPlayer = pPlayer; }
+	FORCEINLINE void SetInteractionPlayer(class AWPlayerCharacter* pPlayer) { mpInteractionPlayer = pPlayer; WCHECK(nullptr != mpInteractionPlayer); }
 
 protected:
 	virtual void BeginPlay() override;

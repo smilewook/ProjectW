@@ -2,9 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectW.h"
 #include "WContentManagerBase.h"
 #include "WInventoryManager.generated.h"
+
+
+class UUserWidget;
+
 
 /**
  * 
@@ -18,10 +22,14 @@ class PROJECTW_API UWInventoryManager : public UWContentManagerBase
 public:
 	UWInventoryManager();
 
-	virtual void InitWidget(UUserWidget* pWidget) override;
+	virtual void InitWidget(UWContentWidgetBase* pWidget) override;
 	virtual void UpdateWidget() override;
 
-	int32 AddItem(const TSubclassOf<class AWItemBase>& itemClass, int32 amount);
+	void AddItem(int32 slotIndex);
+	void RemoveItem(int32 slotIndex);
+	void MoveItem(int32 targetSlotIndex, int32 fromSlotIndex);
+	void SwapItem(int32 targetSlotIndex, int32 fromSlotIndex);
+	void CombineItem(int32 targetSlotIndex, int32 fromSlotIndex);
 
 	UFUNCTION(BlueprintCallable)
 	void PrintInventory();
@@ -37,7 +45,6 @@ public:
 protected:
 
 private:
-	//TArray<TSubclassOf<class AWItemBase>> items;
-	TArray<FString> items;
+	
 
 };

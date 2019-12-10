@@ -3,6 +3,9 @@
 #pragma once
 
 #include "ProjectW.h"
+#include "ProjectWEnums.h"
+#include "ProjectWStructure.h"
+
 #include "GameFramework/Actor.h"
 #include "WItemBase.generated.h"
 
@@ -15,9 +18,14 @@ class PROJECTW_API AWItemBase : public AActor
 public:
 	AWItemBase();
 
+	virtual void InitItemOwner(AActor* _pOwner);
+	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo) { return false; }
+
 	/* Get/Set */
-	FORCEINLINE const FString& GetItemName() const { return mName; }
-	FORCEINLINE const int& GetID() const { return mID; }
+	FORCEINLINE const FItemInfo& GetItemInfo() const { return mpItemInfo; }
+	FORCEINLINE const int32& GetItemID() const { return mpItemInfo.ID; }
+	FORCEINLINE const FName& GetItemName() const { return mpItemInfo.Name; }
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -26,8 +34,9 @@ protected:
 public:	
 	
 protected:
-	int32 mID;
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	struct FItemInfo mpItemInfo;
 
-	FString mName;
+	class AWPlayerCharacter* mpPlayer;
 
 };

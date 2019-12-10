@@ -90,7 +90,7 @@ void AWPickupActor::OnPickedUp(AActor* pActor)
 	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(pActor);
 	if (nullptr != pPlayer)
 	{
-		pPlayer->GetInventory()->AddItem(mItemClass, mAmount);
+		//pPlayer->GetInventory()->AddItem();
 
 		FString pickup = FString::Printf(TEXT("Picked up : %s"), *GetName());
 		GEngine->AddOnScreenDebugMessage(1, 4, FColor::White, pickup);
@@ -100,21 +100,15 @@ void AWPickupActor::OnPickedUp(AActor* pActor)
 
 void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
 {
-// 	if (nullptr != pPlayer->GetTargetActor() && pPlayer->GetTargetActor() != this)
-// 	{
-// 		pPlayer->GetTargetActor()->UnInteract();
-// 	}
 	WLOG(Warning, TEXT("OnInteract PickupActor!!"));
 	// 현재 액터의 인터렉션 플레이어 설정.
 	SetInteractionPlayer(pPlayer);	
 	GetInteractionPlayer()->SetTargetActor(this);
-// 		// 플레이어가 마지막으로 가졋던 액터 인터렉션 해제.
-// 		pPlayer->GetTargetActor()->UnInteract();
-// 
-// 			
-// 
-// 		// 현재 액터를 인터렉션 중인 플레이어에게 넘김.
-// 		GetInteractionPlayer()->SetTargetActor(this);
+	
+	// 루팅 위젯이 있으면 세팅 후 오픈.
+	//UWidget_Base* pWidget = GetInteractionUser()->GetMainWidget()->GetPickupWidget();
+	//mpPickup->InitComponent(pWidget);
+	//mpPickup->Open();
 	
 }
 
@@ -122,10 +116,7 @@ void AWPickupActor::UnInteract()
 {
 	WLOG(Warning, TEXT("UnInteract PickupActor!!"));
 	GetInteractionPlayer()->DelTargetActor();
-
-	//GetInteractionPlayer->SetTargetActor(nullptr);
-	//mpInteractionPlayer->SetTargetActor(nullptr);
-	//mpInteractionPlayer = nullptr;
+	mpInteractionPlayer = nullptr;
 }
 
 void AWPickupActor::BeginPlay()

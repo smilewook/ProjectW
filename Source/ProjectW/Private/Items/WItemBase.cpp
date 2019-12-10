@@ -2,13 +2,18 @@
 
 
 #include "WItemBase.h"
+#include "Player/WPlayerCharacter.h"
 
 
 AWItemBase::AWItemBase()
 {
  	PrimaryActorTick.bCanEverTick = false;
+}
 
-	mName = *GetName();
+void AWItemBase::InitItemOwner(AActor * pOwner)
+{
+	mpPlayer = Cast<AWPlayerCharacter>(pOwner);
+	SetActorHiddenInGame(true);
 }
 
 void AWItemBase::BeginPlay()
