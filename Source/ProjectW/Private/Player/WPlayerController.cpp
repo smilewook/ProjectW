@@ -5,27 +5,23 @@
 #include "WCharacter.h"
 #include "WPlayerState.h"
 #include "Enemies/WEnemy.h"
-#include "Widgets/WHUDWidget.h"
+#include "Widgets/WMainWidget.h"
+#include "Widgets/Player/WHUDWidget.h"
 
 
 
 AWPlayerController::AWPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UWHUDWidget> UI_HUD_C(TEXT("/Game/Widgets/WB_HUD.WB_HUD_C"));
-	if (UI_HUD_C.Succeeded())
+	static ConstructorHelpers::FClassFinder<UWMainWidget> MAIN_WIDGET_C(TEXT("/Game/Widgets/WB_Main.WB_Main_C"));
+	if (MAIN_WIDGET_C.Succeeded())
 	{
-		mHUDWidgetClass = UI_HUD_C.Class;
+		mMainWidgetClass = MAIN_WIDGET_C.Class;
 	}
 }
 
 void AWPlayerController::OnPossess(APawn* inPawn)
 {
 	Super::OnPossess(inPawn);
-}
-
-UWHUDWidget* AWPlayerController::GetHUDWidget() const
-{
-	return mpHUDWidget;
 }
 
 void AWPlayerController::NPCKill(AWEnemy * pKilledNPC) const
@@ -45,12 +41,13 @@ void AWPlayerController::BeginPlay()
 	FInputModeGameOnly inputMode;
 	SetInputMode(inputMode);
 
-	mpHUDWidget = CreateWidget<UWHUDWidget>(this, mHUDWidgetClass);
-	mpHUDWidget->AddToViewport();
+	mpMainWidget = CreateWidget<UWMainWidget>(this, mMainWidgetClass);
+	mpMainWidget->AddToViewport();
 
 	mpPlayerState = Cast<AWPlayerState>(PlayerState);
 	WCHECK(nullptr != mpPlayerState);
-	mpHUDWidget->BindPlayerState(mpPlayerState);
+
+	mpMainWidget->GetHUDWidget()->BindPlayerState(mpPlayerState);
 	mpPlayerState->OnPlayerStateChanged.Broadcast();
 }
 

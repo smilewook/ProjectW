@@ -6,6 +6,13 @@
 #include "GameFramework/Character.h"
 #include "WPlayerCharacter.generated.h"
 
+class AWPlayerController;
+class AWWeapon;
+
+class UWInventoryManager;
+class UWMainWidget;
+
+
 UCLASS()
 class PROJECTW_API AWPlayerCharacter : public ACharacter
 {
@@ -21,7 +28,9 @@ public:
 	void DelTargetActor();
 	
 	/* Get/Set */
-	FORCEINLINE class UWInventoryManager* const& GetInventory() const { return mpInventory; }
+	FORCEINLINE UWMainWidget* const& GetMainWidget() const { return mpMainWidget; }
+	FORCEINLINE UWInventoryManager* GetInventory() const { return mpInventory; }
+	
 	FORCEINLINE AActor* const& GetTargetActor() const { return mpTargetActor; }
 
 	FORCEINLINE void SetTargetActor(AActor* pTargetActor) 
@@ -35,6 +44,7 @@ protected:
 
 private:
 	void Interact();
+	void ToggleInventory();
 
 	void MoveForward(float newAxisValue);
 	void MoveRight(float newAxisValue);
@@ -49,7 +59,7 @@ protected:
 	USkeletalMeshComponent* mpWeapon;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	class AWWeapon* mpCurrentWeapon;
+	AWWeapon* mpCurrentWeapon;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* mpSpringArm;
@@ -57,12 +67,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* mpCamera;
 	
-private:
+/*private:*/
 	UPROPERTY()
-	class AWPlayerController* mpPlayerController;
+	AWPlayerController* mpPlayerController;
 
-	UPROPERTY(VisibleAnywhere, Category = "Widget")
-	class UWInventoryManager* mpInventory;
+	UPROPERTY()
+	UWMainWidget* mpMainWidget;
+
+	UPROPERTY(VisibleAnywhere, Category = "Widgets")
+	UWInventoryManager* mpInventory;
 
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	AActor* mpTargetActor;

@@ -2,7 +2,16 @@
 
 
 #include "WMainWidget.h"
+#include "Managers/WInventoryManager.h"
+#include "Player/WPlayerCharacter.h"
+#include "Widgets/Inventory/WInventoryWidget.h"
+#include "Widgets/Player/WHUDWidget.h"
 
+
+void UWMainWidget::NativeConstruct()
+{
+
+}
 
 bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 {
@@ -10,6 +19,11 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 	{
 		mpPlayer = pPlayer;
 	}
+	
+	// °¢ À§Á¬¿¡ ¸ÞÀÎ/ÄÁÅÙÃ÷ ¸Å´ÏÀú µî·Ï.
+	mpHUDWidget->InitWidget(this);
+	mpInventoryWidget->InitWidget(this, mpPlayer->GetInventory());
 
+	WLOG(Warning, TEXT("UWMainWidget::InitWidget()"));
 	return true;
 }

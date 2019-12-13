@@ -9,6 +9,9 @@
 
 class AWPlayerCharacter;
 
+class UWHUDWidget;
+class UWInventoryWidget;
+
 
 /**
  * 
@@ -22,10 +25,22 @@ class PROJECTW_API UWMainWidget : public UUserWidget
 public:
 	bool InitWidget(AWPlayerCharacter* pPlayer);
 
+	/* Get/Set */
+	FORCEINLINE UWHUDWidget* const& GetHUDWidget() const { return mpHUDWidget; }
+	FORCEINLINE UWInventoryWidget* const& GetInventoryWidget() const { return mpInventoryWidget; }
+
+protected:
+	virtual void NativeConstruct() override;
+
 	/* Properties */
 public:
 
 protected:
 	AWPlayerCharacter* mpPlayer;
 
+	UPROPERTY()
+	UWHUDWidget* mpHUDWidget;
+
+ 	UPROPERTY()
+ 	UWInventoryWidget* mpInventoryWidget;
 };

@@ -6,7 +6,7 @@
 #include "Managers/WInventoryManager.h"
 #include "Player/WCharacter.h"
 #include "Player/WPlayerCharacter.h"
-#include "Widgets/WPickupTextWidget.h"
+#include "Widgets/Misc/WPickupTextWidget.h"
 
 #include <TextBlock.h>
 #include <WidgetComponent.h>
@@ -41,7 +41,7 @@ AWPickupActor::AWPickupActor()
 		mpHoveredMaterial = MAT_HOVERED.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> WB_PICKUPTEXT(TEXT("/Game/Widgets/WB_PickupText.WB_PickupText_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WB_PICKUPTEXT(TEXT("/Game/Widgets/Misc/WB_PickupText.WB_PickupText_C"));
 	if (WB_PICKUPTEXT.Succeeded())
 	{
 		mpPickupText = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupText"));

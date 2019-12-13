@@ -29,7 +29,7 @@ public:
 
 	// 아이템 아이콘(슬롯에 표시).
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
-	class UTexture2D* pItemIcon;
+	class UTexture2D* pIcon;
 
 	// 사용 가능?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")

@@ -5,7 +5,7 @@
 #include "Widgets/WMainWidget.h"
 
 
-bool UWContentWidgetBase::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager)
+void UWContentWidgetBase::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager)
 {
 	if (nullptr != pMainWidget)
 	{
@@ -16,8 +16,6 @@ bool UWContentWidgetBase::InitWidget(UWMainWidget* pMainWidget, UWContentManager
 	{
 		mpContentManager = pContentManager;
 	}
-
-	return true;
 }
 
 void UWContentWidgetBase::UpdateWidget()

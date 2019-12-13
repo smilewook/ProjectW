@@ -22,12 +22,12 @@ public:
 	virtual void InitWidget(UWContentWidgetBase* pWidget);
 	virtual void UpdateWidget();
 
-	virtual void OpenWidget();
-	virtual void CloseWidget();
+	virtual void Open();
+	virtual void Close();
 
 	/* Get/Set */
 	FORCEINLINE UWContentWidgetBase* const& GetWidget() const { return mpWidget; }
-	FORCEINLINE const bool& GetIsOpenWidget() const { return mIsOpenWidget; }
+	FORCEINLINE const bool& GetIsOpen() const { return mIsOpen; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,6 +38,6 @@ public:
 protected:
 	UWContentWidgetBase* mpWidget;
 
-	bool mIsOpenWidget;
+	bool mIsOpen;
 		
 };

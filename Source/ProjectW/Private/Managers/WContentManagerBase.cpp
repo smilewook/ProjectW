@@ -12,7 +12,7 @@ UWContentManagerBase::UWContentManagerBase()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	mpWidget = nullptr;
-	mIsOpenWidget = false;
+	mIsOpen = false;
 }
 
 void UWContentManagerBase::BeginPlay()
@@ -32,20 +32,20 @@ void UWContentManagerBase::UpdateWidget()
 {
 }
 
-void UWContentManagerBase::OpenWidget()
+void UWContentManagerBase::Open()
 {
-	if (false == mIsOpenWidget)
+	if (false == mIsOpen)
 	{
-		mIsOpenWidget = true;
+		mIsOpen = true;
 		mpWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
-void UWContentManagerBase::CloseWidget()
+void UWContentManagerBase::Close()
 {
-	if (true == mIsOpenWidget)
+	if (true == mIsOpen)
 	{
-		mIsOpenWidget = false;
+		mIsOpen = false;
 		mpWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

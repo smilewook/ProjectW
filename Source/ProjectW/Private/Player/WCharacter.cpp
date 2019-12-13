@@ -8,8 +8,8 @@
 #include "WPlayerState.h"
 #include "WGameInstance.h"
 #include "Items/WWeapon.h"
-#include "Widgets/WCharacterWidget.h"
-#include "Widgets/WHUDWidget.h"
+#include "Widgets/Player/WCharacterWidget.h"
+#include "Widgets/Player/WHUDWidget.h"
 
 #include <DrawDebugHelpers.h>
 #include <Components/WidgetComponent.h>
@@ -75,7 +75,7 @@ AWCharacter::AWCharacter()
 	// UIWidget - HPBar.
 	mpHPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
 	mpHPBarWidget->SetWidgetSpace(EWidgetSpace::Screen); // 항상 스크린을 보도록
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBAR(TEXT("/Game/Widgets/WB_HPBar.WB_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBAR(TEXT("/Game/Widgets/Player/WB_HPBar.WB_HPBar_C"));
 	if (UI_HPBAR.Succeeded())
 	{
 		mpHPBarWidget->SetWidgetClass(UI_HPBAR.Class);
@@ -113,7 +113,7 @@ void AWCharacter::SetCharacterState(ECharacterState newState)
 		bCanBeDamaged = false;
 		DisableInput(mpPlayerController);
 
-		mpPlayerController->GetHUDWidget()->BindCharacterStat(CharacterStat);
+		//mpPlayerController->GetHUDWidget()->BindCharacterStat(CharacterStat);
 
 		auto playerState = Cast<AWPlayerState>(GetPlayerState());
 		WCHECK(nullptr != playerState);

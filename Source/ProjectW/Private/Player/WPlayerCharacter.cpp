@@ -2,8 +2,11 @@
 
 
 #include "WPlayerCharacter.h"
+#include "WPlayerController.h"
 #include "Actors/WPickupActor.h"
 #include "Managers/WInventoryManager.h"
+#include "Widgets/WMainWidget.h"
+#include "Widgets/Inventory/WInventoryWidget.h"
 
 
 AWPlayerCharacter::AWPlayerCharacter()
@@ -16,7 +19,7 @@ AWPlayerCharacter::AWPlayerCharacter()
 	mpSpringArm->SetupAttachment(GetCapsuleComponent());
 	mpCamera->SetupAttachment(mpSpringArm);
 
-	// 카메라 구도
+	// 카메라 구도.
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	mpSpringArm->TargetArmLength = 600.0f;
 	mpSpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
@@ -30,36 +33,75 @@ AWPlayerCharacter::AWPlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-	// 점프 높이
+	// 점프 높이.
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
-	// 이동 속도
+	// 이동 속도.
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
-	// 스켈레탈 메시
+	// 스켈레탈 메시.
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CHARACTER_MESH(TEXT("/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard"));
 	if (CHARACTER_MESH.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CHARACTER_MESH.Object);
 	}
 
-	// 애니메이션 인스턴스
+	// 애니메이션 인스턴스.
 	static ConstructorHelpers::FClassFinder<UAnimInstance> CHARACTER_ANIM(TEXT("/Game/Animations/CharacterAnimBP.CharacterAnimBP_C"));
 	if (CHARACTER_ANIM.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(CHARACTER_ANIM.Class);
 	}
 	
-	// 캐릭터 콜리전
+	// 캐릭터 콜리전.
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("WCharacter"));
 
-	// 컨텐츠
+	// 컨텐츠 생성.
+//	mMainWidgetClass = UWMainWidget::StaticClass();
+	
 	mpInventory = CreateDefaultSubobject<UWInventoryManager>(TEXT("Inventory"));
+	
 }
 
 void AWPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	mpPlayerController = Cast<AWPlayerController>(GetController());
+	WCHECK(nullptr != mpPlayerController);
+	mpMainWidget = mpPlayerController->GetMainWidget();
+
+	// 메인 위젯 초기화 확인.
+	bool bInitialize = mpMainWidget->InitWidget(this);
+	if (true == bInitialize)
+	{
+		// 각 컨텐츠에 위젯 등록.
+		mpInventory->InitWidget(mpMainWidget->GetInventoryWidget());
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Create MainWidget Failed."));
+	}
+
+	/*if (IsValid(mMainWidgetClass))
+	{
+		mpMainWidget = CreateWidget<UWMainWidget>(GetWorld(), mMainWidgetClass);
+		if (mpMainWidget != nullptr)
+		{
+			mpMainWidget->AddToViewport();
+		}
+
+		// 메인 위젯 초기화 확인.
+		bool bInitialize = mpMainWidget->InitWidget(this);
+		if (true == bInitialize)
+		{
+			// 각 컨텐츠에 위젯 등록.
+			//mpInventory->InitWidget(mpMainWidget->GetInventoryWidget());
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Create MainWidget Failed."));
+		}
+	}*/
 }
 
 void AWPlayerCharacter::Tick(float DeltaTime)
@@ -74,6 +116,7 @@ void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputC
 
 	pPlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Jump);
 	pPlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Interact);
+	pPlayerInputComponent->BindAction(TEXT("ToggleInventory"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleInventory);
 
 	pPlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AWPlayerCharacter::MoveForward);
 	pPlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AWPlayerCharacter::MoveRight);
@@ -121,6 +164,21 @@ void AWPlayerCharacter::Interact()
 // 		pInteract->UnInteract();
 // 		return;
 // 	}
+}
+
+void AWPlayerCharacter::ToggleInventory()
+{
+	if (nullptr != mpInventory)
+	{
+		if (mpInventory->GetIsOpen())
+		{
+			mpInventory->Close();
+		}
+		else
+		{
+			mpInventory->Open();
+		}
+	}
 }
 
 void AWPlayerCharacter::MoveForward(float newAxisValue)

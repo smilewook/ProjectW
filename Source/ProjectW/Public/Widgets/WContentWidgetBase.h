@@ -21,7 +21,7 @@ class PROJECTW_API UWContentWidgetBase : public UUserWidget
 	
 	/* Methods */
 public:
-	virtual bool InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager);
+	virtual void InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager);
 	virtual void UpdateWidget();
 
 	/* Get/Set */
