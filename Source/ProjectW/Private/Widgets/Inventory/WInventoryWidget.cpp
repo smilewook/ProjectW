@@ -16,11 +16,9 @@
 void UWInventoryWidget::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager)
 {
 	UWContentWidgetBase::InitWidget(pMainWidget, pContentManager);
-
-	mpSlotPanel->ClearChildren();
 }
 
-bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int32 row, int32 column)
+bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int row, int column)
 {
 	if (nullptr != mSlotWidgetClass)
 	{
@@ -28,7 +26,6 @@ bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int32 row, int
 		{
 			return false;
 		}
-		//WLOG(Warning, TEXT("CreateSlot row = %d / column = %d"), row, column);
 
 		UWInventoryManager* pContentManager = Cast<UWInventoryManager>(mpContentManager);
 		UWInventorySlotWidget* pInventorySlot = CreateWidget<UWInventorySlotWidget>(GetWorld(), mSlotWidgetClass);

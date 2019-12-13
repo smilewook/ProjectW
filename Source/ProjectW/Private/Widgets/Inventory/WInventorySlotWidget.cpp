@@ -107,7 +107,7 @@ void UWInventorySlotWidget::NativeOnDragDetected(const FGeometry & inGeometry, c
 
 bool UWInventorySlotWidget::NativeOnDrop(const FGeometry & inGeometry, const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
 {
-	// 드랍 되었을때
+ 	// 드랍 되었을때
 	return false;
 }
 
