@@ -27,8 +27,8 @@ public:
 	virtual void InitWidget(UWContentWidgetBase* pWidget) override;
 	virtual void UpdateWidget() override;
 
-	void AddItem(AWItemBase* pItem);
-	void RemoveItem(const int32& slotIndex);
+	bool AddItem(const TSubclassOf<AWItemBase>& newItemClass, int32 amount);
+	bool RemoveItem(const int32& slotIndex);
 	void MoveItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void SwapItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void CombineItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
@@ -41,6 +41,7 @@ protected:
 
 private:
 	void CreateSlot();
+	int32 SearchEmptySlotIndex();
 
 	/* Properties */
 public:

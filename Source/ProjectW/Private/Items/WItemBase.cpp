@@ -8,9 +8,11 @@
 AWItemBase::AWItemBase()
 {
  	PrimaryActorTick.bCanEverTick = false;
+
+	mpPlayer = nullptr;
 }
 
-void AWItemBase::InitItemOwner(AActor * pOwner)
+void AWItemBase::InitOwner(AActor * pOwner)
 {
 	mpPlayer = Cast<AWPlayerCharacter>(pOwner);
 	SetActorHiddenInGame(true);

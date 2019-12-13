@@ -36,10 +36,10 @@ enum class EStageState : uint8
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
-	Item_None        UMETA(DisplayName = "없음"),
-	Item_Useable	 UMETA(DisplayName = "소모품"),
-	Item_Equipment   UMETA(DisplayName = "장비"),
-	Item_Material    UMETA(DisplayName = "재료"),
-	Item_Misc        UMETA(DisplayName = "잡화"),
+	Item_None        UMETA(DisplayName = "None"),
+	Item_Useable	 UMETA(DisplayName = "Useable"),
+	Item_Equipment   UMETA(DisplayName = "Equipment"),
+	Item_Material    UMETA(DisplayName = "Material"),
+	Item_Misc        UMETA(DisplayName = "Misc"),
 	Item_Max
 };

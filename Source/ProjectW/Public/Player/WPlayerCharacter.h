@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "WPlayerCharacter.generated.h"
 
+
+class AWPickupActor;
 class AWPlayerController;
 class AWWeapon;
 
@@ -31,9 +33,9 @@ public:
 	FORCEINLINE UWMainWidget* const& GetMainWidget() const { return mpMainWidget; }
 	FORCEINLINE UWInventoryManager* GetInventory() const { return mpInventory; }
 	
-	FORCEINLINE AActor* const& GetTargetActor() const { return mpTargetActor; }
+	FORCEINLINE AWPickupActor* const& GetTargetActor() const { return mpTargetActor; }
 
-	FORCEINLINE void SetTargetActor(AActor* pTargetActor) 
+	FORCEINLINE void SetTargetActor(AWPickupActor* pTargetActor)
 	{ 
 		mpTargetActor = pTargetActor; 
 		WLOG(Warning, TEXT("Player PickupActor Set!!"));
@@ -78,6 +80,6 @@ protected:
 	UWInventoryManager* mpInventory;
 
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
-	AActor* mpTargetActor;
+	AWPickupActor* mpTargetActor;
 
 };

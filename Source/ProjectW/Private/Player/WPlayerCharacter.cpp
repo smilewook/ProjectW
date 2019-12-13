@@ -134,6 +134,7 @@ void AWPlayerCharacter::Interact()
 	if (nullptr != GetTargetActor())
 	{
 		WLOG(Warning, TEXT("TargetActor is real!"));
+		mpTargetActor->OnPickedUp(this);
 	}
 	else
 	{
@@ -163,6 +164,13 @@ void AWPlayerCharacter::Interact()
 // 		IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(m_pPlayer->GetTarget());
 // 		pInteract->UnInteract();
 // 		return;
+// 	}
+// 	m_pPickupActor = pPickupActor;
+// 
+// 	m_pPickupActor->SetHasPickupCommand(true);
+// 	if (m_pPickupActor->GetDistanceTo(GetPawn()) <= 300.f)
+// 	{
+// 		m_pPickupActor->OnPickedUp(GetPawn());
 // 	}
 }
 

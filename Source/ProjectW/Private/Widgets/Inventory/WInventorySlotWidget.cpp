@@ -25,6 +25,7 @@ void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventory, FInventor
 	if (nullptr != pSlotInfo)
 	{
 		mpSlotInfo = pSlotInfo;
+
 		mpSlotInfo->pSlotWidget = this;
 	}
 }
@@ -33,11 +34,12 @@ void UWInventorySlotWidget::UpdateWidget()
 {
 	if (nullptr != mpSlotInfo)
 	{
-		if (nullptr != mpSlotInfo->pItemClass)
+		if (nullptr != mpSlotInfo->ItemClass)
 		{
-			mpIcon->SetBrushFromTexture(mpSlotInfo->pItemClass->GetItemInfo().pIcon);
+			WLOG(Warning, TEXT("UWInventorySlotWidget::UpdateWidget() mpSlotInfo->pItemClass"));
+			mpIcon->SetBrushFromTexture(mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().pIcon);
 
-			if (mpSlotInfo->pItemClass->GetItemInfo().IsStackAble && (mpSlotInfo->Amount > 0))
+			if (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().IsStackAble && (mpSlotInfo->Amount > 0))
 			{
 				mpAmountText->SetText(FText::AsNumber(mpSlotInfo->Amount));
 				mpAmountText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -71,7 +73,7 @@ void UWInventorySlotWidget::Hide()
 
 FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent)
 {
-	if (mpSlotInfo->pItemClass)
+	if (mpSlotInfo->ItemClass)
 	{
 		// 마우스 왼쪽 클릭.
 		if (inMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
@@ -85,9 +87,9 @@ FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry & inGeomet
 		// 마우스 오른쪽 클릭.
 		if (inMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
 		{
-			if (mpSlotInfo->pItemClass->GetItemInfo().IsUseAble)
+			if (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().IsUseAble)
 			{
-				if (mpSlotInfo->pItemClass->OnUse(mpSlotInfo))
+				if (mpSlotInfo->ItemClass.GetDefaultObject()->OnUse(mpSlotInfo))
 				{
 					UpdateWidget();
 				}

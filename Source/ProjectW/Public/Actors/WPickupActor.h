@@ -6,6 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "WPickupActor.generated.h"
 
+
+class AWItemBase;
+class AWPlayerCharacter;
+
+class UMaterial;
+class UWidgetComponent;
+
+
 UCLASS()
 class PROJECTW_API AWPickupActor : public AActor
 {
@@ -18,17 +26,17 @@ public:
 	virtual void OnConstruction(const FTransform& transform) override;
 
 	void UpdateText();
-	void OnPickedUp(class AActor* pPlayer);
-	void OnInteract(class AWPlayerCharacter* pPlayer);
+	void OnPickedUp(AWPlayerCharacter* pPlayer);
+	void OnInteract(AWPlayerCharacter* pPlayer);
 	void UnInteract();
 
 	/* Get/Set */
-	FORCEINLINE class USphereComponent* const& GetSphere() const { return mpTrigger; }
+	FORCEINLINE USphereComponent* const& GetSphere() const { return mpTrigger; }
 	FORCEINLINE const FString& GetName() const { return mName; }
 	FORCEINLINE const int& GetID() const { return mID; }
 	FORCEINLINE const int& GetAmount() const { return mAmount; }
-	FORCEINLINE class UWidgetComponent* const& GetPickupText() const { return mpPickupText; }
-	FORCEINLINE class AWPlayerCharacter* const& GetInteractionPlayer() const { return mpInteractionPlayer; }
+	FORCEINLINE UWidgetComponent* const& GetPickupText() const { return mpPickupText; }
+	FORCEINLINE AWPlayerCharacter* const& GetInteractionPlayer() const { return mpInteractionPlayer; }
 
 	/* Set */
 	FORCEINLINE void SetAmount(int amount) { mAmount = amount; }
@@ -38,22 +46,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void OnActivate();
+
 private:
 	UFUNCTION()
-	void OnOverlapBegin(
-		UPrimitiveComponent* overlappedComp, 
-		AActor* otherActor, 
-		UPrimitiveComponent* otherComp, 
-		int32 otherBodyIndex, 
-		bool bFromSweep, 
-		const FHitResult& sweepResult);
-
+	void OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 	UFUNCTION()
-	void OnOverlapEnd(
-		UPrimitiveComponent* overlappedComponent,
-		AActor* otherActor,
-		UPrimitiveComponent* otherComp,
-		int32 otherBodyIndex);
+	void OnOverlapEnd(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex);
 
 	// 아이템 마우스 오버아웃
 	UFUNCTION()
@@ -71,16 +70,16 @@ protected:
 	USphereComponent* mpTrigger;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	class UWidgetComponent* mpPickupText;
+	UWidgetComponent* mpPickupText;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Configuration | Material")
-	UStaticMeshComponent* mpItemMesh;
+	UStaticMeshComponent* mpStaticMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Material")
-	class UMaterial* mpDefaultMaterial;
+	UMaterial* mpDefaultMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Material")
-	class UMaterial* mpHoveredMaterial;	
+	UMaterial* mpHoveredMaterial;	
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
 	FString mName;
@@ -89,7 +88,7 @@ protected:
 	int32 mID;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
-	TSubclassOf<class AWItemBase> mItemClass;
+	TSubclassOf<AWItemBase> mItemClass;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
 	int32 mAmount;
@@ -100,6 +99,6 @@ protected:
 
 	UMaterialInterface* mpOriginalMaterial;
 
-	class AWPlayerCharacter* mpInteractionPlayer;
+	AWPlayerCharacter* mpInteractionPlayer;
 
 };

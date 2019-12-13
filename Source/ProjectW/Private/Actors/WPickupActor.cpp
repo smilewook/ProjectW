@@ -2,6 +2,7 @@
 
 
 #include "WPickupActor.h"
+#include "ProjectWStructure.h"
 #include "Items/WItemBase.h"
 #include "Managers/WInventoryManager.h"
 #include "Player/WCharacter.h"
@@ -24,10 +25,10 @@ AWPickupActor::AWPickupActor()
 	mpTrigger->SetupAttachment(RootComponent);
 	mpTrigger->SetCollisionProfileName(TEXT("WItemBox"));
 
-	mpItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
-	mpItemMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	mpItemMesh->SetCollisionResponseToChannel(ECC_Visibility, ECollisionResponse::ECR_Block);
-	mpItemMesh->SetupAttachment(RootComponent);
+	mpStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
+	mpStaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	mpStaticMesh->SetCollisionResponseToChannel(ECC_Visibility, ECollisionResponse::ECR_Block);
+	mpStaticMesh->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> MAT_DEFAULT(TEXT("/Game/Resources/Materials/M_DefaultPickup.M_DefaultPickup"));
 	if (MAT_DEFAULT.Succeeded())
@@ -46,11 +47,11 @@ AWPickupActor::AWPickupActor()
 	{
 		mpPickupText = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupText"));
 		mpPickupText->SetWidgetClass(WB_PICKUPTEXT.Class);
-		mpPickupText->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+		mpPickupText->SetRelativeLocation(FVector(0.0f, 0.0f, 60.0f));
 		mpPickupText->SetWidgetSpace(EWidgetSpace::Screen);
-		mpPickupText->SetDrawSize(FVector2D(100.f, 100.f));
+		mpPickupText->SetDrawSize(FVector2D(150.f, 40.f));
 		mpPickupText->SetVisibility(false);
-		mpPickupText->SetupAttachment(mpItemMesh);
+		mpPickupText->SetupAttachment(mpStaticMesh);
 	}
 
 }
@@ -58,17 +59,19 @@ AWPickupActor::AWPickupActor()
 void AWPickupActor::OnConstruction(const FTransform& transform)
 {
 	Super::OnConstruction(transform);
-
+	WLOG(Warning, TEXT("AWPickupActor::OnConstruction()"));
+	// 아이템 속성에 접근해서 액터에 적용.
 	if (nullptr != mItemClass)
 	{
-// 		FItemInfo ItemInfo = mItemClass.GetDefaultObject()->GetItemInfo();
-// 
-//		mpOriginalMaterial = mpItemMesh->GetMaterial(0);
-//
-// 		mpItemMesh->SetStaticMesh(ItemInfo.pStaticMesh);
-// 		mpItemMesh->SetRelativeScale3D(ItemInfo.MeshScale);
-// 
-// 		mpTrigger->SetSphereRadius(ItemInfo.InteractRadius);
+		WLOG(Warning, TEXT("AWPickupActor::OnConstruction() ItemClass"));
+		FItemInfo ItemInfo = mItemClass.GetDefaultObject()->GetItemInfo();
+
+		mpOriginalMaterial = mpStaticMesh->GetMaterial(0);
+
+		mpStaticMesh->SetStaticMesh(ItemInfo.pStaticMesh);
+		mpStaticMesh->SetRelativeScale3D(ItemInfo.MeshScale);
+
+		mpTrigger->SetSphereRadius(ItemInfo.InteractRadius);
 	}
 }
 
@@ -77,24 +80,26 @@ void AWPickupActor::UpdateText()
 	UWPickupTextWidget* pPickupTextWidget = Cast<UWPickupTextWidget>(mpPickupText->GetUserWidgetObject());
 	if (nullptr != pPickupTextWidget)
 	{
-		FName itemName = FName(TEXT("ItemName"));
-		FText text = FText::FromName(itemName);
-// 		FName ItemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;
-// 		FText text = FText::Format(LOCTEXT("Format", "{0} ({1})"), FText::FromName(ItemName), m_Amount);
+		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;
+ 		FText text = FText::FromName(itemName);
  		pPickupTextWidget->GetNameText()->SetText(text);
 	}
 }
 
-void AWPickupActor::OnPickedUp(AActor* pActor)
+void AWPickupActor::OnPickedUp(AWPlayerCharacter* pPlayer)
 {
-	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(pActor);
 	if (nullptr != pPlayer)
 	{
-		//pPlayer->GetInventory()->AddItem();
+		// 인벤토리에 바로 넣기.
+		bool bSuccess = pPlayer->GetInventory()->AddItem(mItemClass, mAmount);
+		if (true == bSuccess)
+		{
+			WLOG(Warning, TEXT("AWPickupActor::OnPickedUp Success!! : %s"), *GetName());
 
-		FString pickup = FString::Printf(TEXT("Picked up : %s"), *GetName());
-		GEngine->AddOnScreenDebugMessage(1, 4, FColor::White, pickup);
-		Destroy();
+// 			FString pickup = FString::Printf(TEXT("Picked up : %s"), *GetName());
+// 			GEngine->AddOnScreenDebugMessage(1, 4, FColor::White, pickup
+			Destroy();
+		}
 	}
 }
 
@@ -122,22 +127,28 @@ void AWPickupActor::UnInteract()
 void AWPickupActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnActivate();
 	
 	mpTrigger->OnComponentBeginOverlap.AddDynamic(this, &AWPickupActor::OnOverlapBegin);
-	mpTrigger->OnComponentEndOverlap.AddDynamic(this, &AWPickupActor::OnOverlapEnd);
+	mpTrigger->OnComponentEndOverlap.AddDynamic(this, &AWPickupActor::OnOverlapEnd);	
+}
+
+void AWPickupActor::OnActivate()
+{
+	//UpdateText();
+	mpPickupText->SetVisibility(true);
 }
 
 void AWPickupActor::OnOverlapBegin(UPrimitiveComponent * overlappedComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult)
 {
 	//auto character = Cast<AWCharacter>(otherActor);
 	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(otherActor);
-	WCHECK(nullptr != pPlayer);
-
-	if (nullptr != pPlayer)
+	WCHECK(::IsValid(pPlayer));
+	if (::IsValid(pPlayer))
 	{
-		OnInteract(pPlayer);
-
-		mpPickupText->SetVisibility(true);
+		OnInteract(pPlayer);		
+		mIsInRange = true;
 	}
 }
 
@@ -145,14 +156,11 @@ void AWPickupActor::OnOverlapEnd(UPrimitiveComponent * overlappedComp, AActor * 
 {
 	//auto character = Cast<AWCharacter>(otherActor);
 	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(otherActor);
-	WCHECK(nullptr != pPlayer);
-
-	if (nullptr != pPlayer)
+	WCHECK(::IsValid(pPlayer));
+	if (::IsValid(pPlayer))
 	{
 		UnInteract();
-
 		mIsInRange = false;
-		mpPickupText->SetVisibility(false);
 	}
 }
 
@@ -160,7 +168,7 @@ void AWPickupActor::OnHovered(UPrimitiveComponent* pTouchedComponent)
 {
 	mIsHovered = true;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Hand;
-	mpItemMesh->SetMaterial(0, mpHoveredMaterial);
+	mpStaticMesh->SetMaterial(0, mpHoveredMaterial);
 	mpPickupText->SetVisibility(true);
 }
 
@@ -168,6 +176,6 @@ void AWPickupActor::OnUnhovered(UPrimitiveComponent* pTouchedComponent)
 {
 	mIsHovered = false;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Default;
-	mpItemMesh->SetMaterial(0, mpOriginalMaterial);
+	mpStaticMesh->SetMaterial(0, mpOriginalMaterial);
 	mpPickupText->SetVisibility(mIsInRange);
 }

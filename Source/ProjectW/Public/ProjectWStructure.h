@@ -9,6 +9,11 @@
 #include "ProjectWStructure.generated.h"
 
 
+class AWItemBase;
+
+class UWInventorySlotWidget;
+
+
 USTRUCT(BlueprintType)
 struct FItemInfo
 {
@@ -79,7 +84,7 @@ struct FItemContents : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemContent")
-	TSubclassOf<class AWItemBase> ItemClass;
+	TSubclassOf<AWItemBase> ItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemContent")
 	int32 MinAmount;
@@ -96,41 +101,21 @@ struct FInventorySlotInfo
 {
 	GENERATED_BODY()
 
-	FInventorySlotInfo() : SlotIndex(0), pSlotWidget(nullptr), pItemClass(nullptr), Amount(0) {};
+	FInventorySlotInfo() : SlotIndex(0), pSlotWidget(nullptr), ItemClass(nullptr), Amount(0) {};
 
-	FInventorySlotInfo(int32 slotIndex, class UWInventorySlotWidget* pSlot, AWItemBase* pItem, int32 amount)
-		: SlotIndex(slotIndex), pSlotWidget(pSlot), pItemClass(pItem), Amount(amount) {};
+	FInventorySlotInfo(int32 slotIndex, UWInventorySlotWidget* pSlot, const TSubclassOf<AWItemBase> itemClass, int32 amount)
+		: SlotIndex(slotIndex), pSlotWidget(pSlot), ItemClass(itemClass), Amount(amount) {};
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
 	int32 SlotIndex;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
-	class UWInventorySlotWidget* pSlotWidget;
+	UWInventorySlotWidget* pSlotWidget;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
-	AWItemBase * pItemClass;
+	TSubclassOf<AWItemBase> ItemClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
 	int32 Amount;
-};
-
-USTRUCT(BlueprintType)
-struct FInventorySlot
-{
-	GENERATED_BODY()
-
-public:
-	FInventorySlot() {};
-	FInventorySlot(const TSubclassOf<class AWItemBase> itemClass, const int& amount)
-		:ItemClass(itemClass), Amount(amount) {};
-
-public:
-	// 아이템 클레스.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "InventorySlot")
-	TSubclassOf<class AWItemBase> ItemClass;
-
-	// 아이템 수량.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "InventorySlot")
-	int Amount;
 };
