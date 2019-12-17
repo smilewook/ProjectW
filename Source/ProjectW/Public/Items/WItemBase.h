@@ -29,6 +29,7 @@ public:
 	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo) { return false; }
 
 	/* Get/Set */
+	FORCEINLINE const int32& GetItemID() const { return mItemInfo.ID; }
 	FORCEINLINE const FItemInfo& GetItemInfo() const { return mItemInfo; }
 
 protected:

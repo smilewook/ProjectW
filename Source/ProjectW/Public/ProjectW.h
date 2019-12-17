@@ -10,3 +10,6 @@ DECLARE_LOG_CATEGORY_EXTERN(ProjectW, Log, All);
 #define WLOG_S(Verbosity) UE_LOG(ProjectW, Verbosity, TEXT("%s"), *WLOG_CALLINFO)
 #define WLOG(Verbosity, Format, ...) UE_LOG(ProjectW, Verbosity, TEXT("%s%s"), *WLOG_CALLINFO, *FString::Printf(Format, ##__VA_ARGS__))
 #define WCHECK(Expr, ...) { if(!(Expr)) { WLOG(Error, TEXT("ASSERTION : %s"), TEXT("'"#Expr"'")); return __VA_ARGS__; } }
+
+#define	WLOG_SCREEN(Format) GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, Format)
+#define	WLOG_SCREEN_T(Time, Format) GEngine->AddOnScreenDebugMessage(-1, Time, FColor::Yellow, Format)

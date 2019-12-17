@@ -33,15 +33,14 @@ public:
 	/* Get/Set */
 	FORCEINLINE USphereComponent* const& GetSphere() const { return mpTrigger; }
 	FORCEINLINE const FString& GetName() const { return mName; }
-	FORCEINLINE const int& GetID() const { return mID; }
-	FORCEINLINE const int& GetAmount() const { return mAmount; }
+	FORCEINLINE const int32& GetID() const { return mID; }
+	FORCEINLINE const int32& GetAmount() const { return mAmount; }
 	FORCEINLINE UWidgetComponent* const& GetPickupText() const { return mpPickupText; }
 	FORCEINLINE AWPlayerCharacter* const& GetInteractionPlayer() const { return mpInteractionPlayer; }
 
-	/* Set */
-	FORCEINLINE void SetAmount(int amount) { mAmount = amount; }
+	FORCEINLINE void SetAmount(int32 amount) { mAmount = amount; }
 	FORCEINLINE void SetHasPickupCommand(bool hasCommand) { mHasPickupCommand = hasCommand; }
-	FORCEINLINE void SetInteractionPlayer(class AWPlayerCharacter* pPlayer) { mpInteractionPlayer = pPlayer; WCHECK(nullptr != mpInteractionPlayer); }
+	FORCEINLINE void SetInteractionPlayer(AWPlayerCharacter* pPlayer) { WCHECK(nullptr != pPlayer); mpInteractionPlayer = pPlayer;  }
 
 protected:
 	virtual void BeginPlay() override;

@@ -20,7 +20,7 @@ void UWContentManagerBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UWContentManagerBase::InitWidget(UWContentWidgetBase* pWidget)
+void UWContentManagerBase::InitManager(UWContentWidgetBase* pWidget)
 {
 	if (nullptr != pWidget)
 	{
@@ -28,7 +28,7 @@ void UWContentManagerBase::InitWidget(UWContentWidgetBase* pWidget)
 	}
 }
 
-void UWContentManagerBase::UpdateWidget()
+void UWContentManagerBase::UpdateManager()
 {
 }
 

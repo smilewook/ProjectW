@@ -3,26 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ProjectWEnums.h"
+#include "ProjectWStructure.h"
 #include "Widgets/WContentWidgetBase.h"
-#include "WInventoryWidget.generated.h"
+#include "WStatWidget.generated.h"
 
 
-struct FInventorySlotInfo;
-
-class UWMainWidget;
-class UWInventorySlotWidget;
+class UWStatManager;
+class UWStatLabelWidget;
 
 class UButton;
-class UScrollBox;
 class UTextBlock;
-class UUniformGridPanel;
+class UVerticalBox;
 
 
 /**
  * 
  */
 UCLASS()
-class PROJECTW_API UWInventoryWidget : public UWContentWidgetBase
+class PROJECTW_API UWStatWidget : public UWContentWidgetBase
 {
 	GENERATED_BODY()
 	
@@ -30,7 +29,7 @@ class PROJECTW_API UWInventoryWidget : public UWContentWidgetBase
 public:
 	virtual void InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager) override;
 
-	bool CreateSlot(FInventorySlotInfo* pSlotInfo, int32 row, int32 column);
+	void CreateStatAttribute();
 
 protected:
 	virtual void NativeConstruct() override;
@@ -43,27 +42,27 @@ private:
 	void OnCloseButtonClicked();
 
 	/* Properties */
-public:
-
 protected:
 	UPROPERTY()
 	UTextBlock* mpNameText;
 
 	UPROPERTY()
 	UButton* mpCloseButton;
+	
+	UPROPERTY()
+	UTextBlock* mpDefaultStatText;
+	
+	UPROPERTY()
+	UVerticalBox* mpDefaultStats;
 
 	UPROPERTY()
-	UScrollBox* mpScrollBox;
+	UTextBlock* mpSpecialStatText;
 
 	UPROPERTY()
-	UUniformGridPanel* mpSlotPanel;
-
-	UPROPERTY()
-	UTextBlock* mpAmountText;
+	UVerticalBox* mpSpecialStats;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
-	TSubclassOf<UWInventorySlotWidget> mSlotWidgetClass;
+	TSubclassOf<UWStatLabelWidget> mStatLabelWidgetClass;
 
-private:
-
+	UWStatManager* mpStatManager;
 };

@@ -8,6 +8,7 @@
 
 
 class UWInventoryManager;
+class UWItemDestroyWidget;
 
 struct FInventorySlotInfo;
 
@@ -32,9 +33,12 @@ public:
 	FORCEINLINE FInventorySlotInfo* const& GetSlotInfo() const { return mpSlotInfo; }
 
 protected:
+	virtual void NativeConstruct() override;
+
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent) override;
 	virtual void NativeOnDragDetected(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent, UDragDropOperation*& outOperation) override;
 	virtual bool NativeOnDrop(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation) override;
+	virtual void NativeOnDragCancelled(const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation);
 	virtual void NativeOnMouseEnter(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent) override;
 	virtual void NativeOnMouseLeave(const FPointerEvent& inMouseEvent) override;
 	virtual void NativeOnDragEnter(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation) override;
@@ -44,8 +48,14 @@ protected:
 public:
 
 protected:
-	UPROPERTY()
-	class UButton* mpButton;
+	UPROPERTY(BlueprintReadOnly)
+	class UBorder* mpOutline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration")
+	FLinearColor mOnColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration")
+	FLinearColor mOverColor;
 
 	UPROPERTY()
 	class UImage* mpIcon;
@@ -53,7 +63,9 @@ protected:
 	UPROPERTY()
 	class UTextBlock* mpAmountText;
 
-	UWInventoryManager* mpInventory;
-
 	FInventorySlotInfo* mpSlotInfo = nullptr;
+
+	UWInventoryManager* mpInventoryManager;
+
+	UWItemDestroyWidget* mpItemDestroy;
 };

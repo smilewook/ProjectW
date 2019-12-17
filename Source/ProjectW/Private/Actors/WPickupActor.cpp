@@ -47,7 +47,7 @@ AWPickupActor::AWPickupActor()
 	{
 		mpPickupText = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupText"));
 		mpPickupText->SetWidgetClass(WB_PICKUPTEXT.Class);
-		mpPickupText->SetRelativeLocation(FVector(0.0f, 0.0f, 60.0f));
+		mpPickupText->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
 		mpPickupText->SetWidgetSpace(EWidgetSpace::Screen);
 		mpPickupText->SetDrawSize(FVector2D(150.f, 40.f));
 		mpPickupText->SetVisibility(false);
@@ -59,11 +59,10 @@ AWPickupActor::AWPickupActor()
 void AWPickupActor::OnConstruction(const FTransform& transform)
 {
 	Super::OnConstruction(transform);
-	WLOG(Warning, TEXT("AWPickupActor::OnConstruction()"));
+	
 	// 아이템 속성에 접근해서 액터에 적용.
 	if (nullptr != mItemClass)
 	{
-		WLOG(Warning, TEXT("AWPickupActor::OnConstruction() ItemClass"));
 		FItemInfo ItemInfo = mItemClass.GetDefaultObject()->GetItemInfo();
 
 		mpOriginalMaterial = mpStaticMesh->GetMaterial(0);
@@ -80,9 +79,10 @@ void AWPickupActor::UpdateText()
 	UWPickupTextWidget* pPickupTextWidget = Cast<UWPickupTextWidget>(mpPickupText->GetUserWidgetObject());
 	if (nullptr != pPickupTextWidget)
 	{
-		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;
- 		FText text = FText::FromName(itemName);
- 		pPickupTextWidget->GetNameText()->SetText(text);
+		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;		
+ 		pPickupTextWidget->GetNameText()->SetText(FText::FromName(itemName));
+
+		mName = itemName.ToString();
 	}
 }
 
@@ -91,13 +91,11 @@ void AWPickupActor::OnPickedUp(AWPlayerCharacter* pPlayer)
 	if (nullptr != pPlayer)
 	{
 		// 인벤토리에 바로 넣기.
-		bool bSuccess = pPlayer->GetInventory()->AddItem(mItemClass, mAmount);
+		bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mItemClass, mAmount);
 		if (true == bSuccess)
 		{
 			WLOG(Warning, TEXT("AWPickupActor::OnPickedUp Success!! : %s"), *GetName());
 
-// 			FString pickup = FString::Printf(TEXT("Picked up : %s"), *GetName());
-// 			GEngine->AddOnScreenDebugMessage(1, 4, FColor::White, pickup
 			Destroy();
 		}
 	}
@@ -105,7 +103,6 @@ void AWPickupActor::OnPickedUp(AWPlayerCharacter* pPlayer)
 
 void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
 {
-	WLOG(Warning, TEXT("OnInteract PickupActor!!"));
 	// 현재 액터의 인터렉션 플레이어 설정.
 	SetInteractionPlayer(pPlayer);	
 	GetInteractionPlayer()->SetTargetActor(this);
@@ -119,7 +116,6 @@ void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
 
 void AWPickupActor::UnInteract()
 {
-	WLOG(Warning, TEXT("UnInteract PickupActor!!"));
 	GetInteractionPlayer()->DelTargetActor();
 	mpInteractionPlayer = nullptr;
 }
@@ -136,7 +132,7 @@ void AWPickupActor::BeginPlay()
 
 void AWPickupActor::OnActivate()
 {
-	//UpdateText();
+	UpdateText();
 	mpPickupText->SetVisibility(true);
 }
 

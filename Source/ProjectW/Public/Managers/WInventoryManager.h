@@ -24,17 +24,15 @@ class PROJECTW_API UWInventoryManager : public UWContentManagerBase
 public:
 	UWInventoryManager();
 
-	virtual void InitWidget(UWContentWidgetBase* pWidget) override;
-	virtual void UpdateWidget() override;
+	virtual void InitManager(UWContentWidgetBase* pWidget) override;
+	virtual void UpdateManager() override;
 
 	bool AddItem(const TSubclassOf<AWItemBase>& newItemClass, int32 amount);
+	bool AddItemByIndex(const int32& slotIndex, const TSubclassOf<AWItemBase>& newItemClass, int32 amount);
 	bool RemoveItem(const int32& slotIndex);
 	void MoveItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void SwapItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void CombineItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
-
-	UFUNCTION(BlueprintCallable)
-	void PrintInventory();
 
 protected:
 	virtual void BeginPlay() override;
@@ -42,6 +40,7 @@ protected:
 private:
 	void CreateSlot();
 	int32 SearchEmptySlotIndex();
+	bool IsEmptySlot(int32 slotIndex);
 
 	/* Properties */
 public:

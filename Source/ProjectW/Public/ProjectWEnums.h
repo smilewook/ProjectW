@@ -7,7 +7,7 @@
 #include "ProjectWEnums.generated.h"
 
 
-#define CONVERT_DISPLAYNAME_TO_STRING(eType, eValue) ( (FindObject<UEnum>(ANY_PACKAGE, eType, true) != nullptr) ? (FindObject<UEnum>(ANY_PACKAGE, eType, true)->GetDisplayNameTextByIndex((int8)eValue)).ToString() : FString("Convert Failed!") );
+#define CONVERT_DISPLAYNAME_TO_STRING(eType, eValue) ( (FindObject<UEnum>(ANY_PACKAGE, eType, true) != nullptr) ? (FindObject<UEnum>(ANY_PACKAGE, eType, true)->GetDisplayNameTextByIndex((int32)eValue)).ToString() : FString("Convert Failed!") );
 
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
@@ -42,4 +42,29 @@ enum class EItemType : uint8
 	Item_Material    UMETA(DisplayName = "Material"),
 	Item_Misc        UMETA(DisplayName = "Misc"),
 	Item_Max
+};
+
+UENUM(BlueprintType)
+enum class EStatAttributeType : uint8
+{
+	EStatAttribute_None		UMETA(DisplayName = "None"),
+	EStatAttribute_Level	UMETA(DisplayName = "Level"),
+	EStatAttribute_Exp		UMETA(DisplayName = "Exp"),
+	EStatAttribute_HP		UMETA(DisplayName = "HP"),
+	EStatAttribute_MP		UMETA(DisplayName = "MP"),
+	EStatAttribute_Attack	UMETA(DisplayName = "ATK"),
+	EStatAttribute_Defense	UMETA(DisplayName = "DEF"),
+	EStatAttribute_Special	UMETA(DisplayName = "Special"),
+	EStatAttribute_Critical UMETA(DisplayName = "Critical"),
+	EStatAttribute_Dodge	UMETA(DisplayName = "Dodge"),
+	EStatAttribute_Max
+};
+
+UENUM(BlueprintType)
+enum class EEquipType : uint8
+{
+	Equip_None		UMETA(DisplayName = "None"),
+	Equip_Weapon	UMETA(DisplayName = "Weapon"),
+	Equip_Shield	UMETA(DisplayName = "Shield"),
+	Max
 };

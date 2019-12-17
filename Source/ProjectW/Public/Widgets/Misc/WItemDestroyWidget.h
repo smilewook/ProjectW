@@ -4,25 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Widgets/WContentWidgetBase.h"
-#include "WInventoryWidget.generated.h"
+#include "WItemDestroyWidget.generated.h"
 
 
 struct FInventorySlotInfo;
 
-class UWMainWidget;
-class UWInventorySlotWidget;
-
 class UButton;
-class UScrollBox;
 class UTextBlock;
-class UUniformGridPanel;
 
 
 /**
  * 
  */
 UCLASS()
-class PROJECTW_API UWInventoryWidget : public UWContentWidgetBase
+class PROJECTW_API UWItemDestroyWidget : public UWContentWidgetBase
 {
 	GENERATED_BODY()
 	
@@ -30,7 +25,11 @@ class PROJECTW_API UWInventoryWidget : public UWContentWidgetBase
 public:
 	virtual void InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager) override;
 
-	bool CreateSlot(FInventorySlotInfo* pSlotInfo, int32 row, int32 column);
+	void Show(FInventorySlotInfo* pSlotInfo);
+	void Hide();
+
+	/* Get/Set */
+	FORCEINLINE UTextBlock* const& GetNameText() const { return mpNameText; }
 
 protected:
 	virtual void NativeConstruct() override;
@@ -40,30 +39,27 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnCloseButtonClicked();
+	void OnConfrimButtonClicked();
+	UFUNCTION()
+	void OnCancelButtonClicked();
 
 	/* Properties */
-public:
-
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configuration")
+	UTextBlock* mpTitleText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configuration")
 	UTextBlock* mpNameText;
 
-	UPROPERTY()
-	UButton* mpCloseButton;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configuration")
+	UTextBlock* mpDescText;
 
 	UPROPERTY()
-	UScrollBox* mpScrollBox;
+	UButton* mpConfirmButton;
 
 	UPROPERTY()
-	UUniformGridPanel* mpSlotPanel;
-
-	UPROPERTY()
-	UTextBlock* mpAmountText;
-
-	UPROPERTY(EditAnywhere, Category = "Configuration")
-	TSubclassOf<UWInventorySlotWidget> mSlotWidgetClass;
+	UButton* mpCancelButton;
 
 private:
-
+	FInventorySlotInfo* mpSlotInfo;
 };

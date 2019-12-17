@@ -6,8 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "WCharacterStatComponent.generated.h"
 
+
 DECLARE_MULTICAST_DELEGATE(FOnHPIsZeroDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
+
+struct FWCharacterData;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTW_API UWCharacterStatComponent : public UActorComponent
@@ -19,18 +23,18 @@ public:
 	// Sets default values for this component's properties
 	UWCharacterStatComponent();
 
+	FOnHPIsZeroDelegate		OnHPIsZero;
+	FOnHPChangedDelegate	OnHPChanged;
+
+	/* Get/Set */
 	void SetNewLevel(int32 newLevel);
 	void SetDamage(float newDamage);
 	void SetHP(float newHP);
 	float GetAttack();
 	float GetHPRatio();
 	int32 GetDropExp();
-
-	FOnHPIsZeroDelegate		OnHPIsZero;
-	FOnHPChangedDelegate	OnHPChanged;
 	
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
 
@@ -38,7 +42,7 @@ protected:
 public:	
 
 private:	
-	struct FWCharacterData* mpCurrentStatData = nullptr;
+	FWCharacterData* mpCurrentStatData = nullptr;
 
 	UPROPERTY(EditInstanceOnly, Category = stat, Meta = (AllowPrivateAccess = true))
 	int32 mLevel;

@@ -11,6 +11,8 @@ class AWPlayerCharacter;
 
 class UWHUDWidget;
 class UWInventoryWidget;
+class UWItemDestroyWidget;
+class UWStatWidget;
 
 
 /**
@@ -26,11 +28,14 @@ public:
 	bool InitWidget(AWPlayerCharacter* pPlayer);
 
 	/* Get/Set */
-	FORCEINLINE UWHUDWidget* const& GetHUDWidget() const { return mpHUDWidget; }
-	FORCEINLINE UWInventoryWidget* const& GetInventoryWidget() const { return mpInventoryWidget; }
+	FORCEINLINE UWHUDWidget*			const& GetHUDWidget() const { return mpHUDWidget; }
+	FORCEINLINE UWInventoryWidget*		const& GetInventoryWidget() const { return mpInventoryWidget; }
+	FORCEINLINE UWItemDestroyWidget*	const& GetItemDestroyWidget() const { return mpItemDestroyWidget; }
+	FORCEINLINE UWStatWidget*			const& GetStatWidget() const { return mpStatWidget; }
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual bool NativeOnDrop(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation) override;
 
 	/* Properties */
 public:
@@ -43,4 +48,10 @@ protected:
 
  	UPROPERTY()
  	UWInventoryWidget* mpInventoryWidget;
+
+	UPROPERTY()
+	UWItemDestroyWidget* mpItemDestroyWidget;
+
+	UPROPERTY()
+	UWStatWidget* mpStatWidget;
 };

@@ -5,8 +5,12 @@
 #include "WPlayerController.h"
 #include "Actors/WPickupActor.h"
 #include "Managers/WInventoryManager.h"
+#include "Managers/WStatManager.h"
 #include "Widgets/WMainWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
+#include "Widgets/Stat/WStatWidget.h"
+
+#include <WidgetBlueprintLibrary.h>
 
 
 AWPlayerCharacter::AWPlayerCharacter()
@@ -55,10 +59,9 @@ AWPlayerCharacter::AWPlayerCharacter()
 	// Ä³¸¯ÅÍ ÄÝ¸®Àü.
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("WCharacter"));
 
-	// ÄÁÅÙÃ÷ »ý¼º.
-//	mMainWidgetClass = UWMainWidget::StaticClass();
-	
-	mpInventory = CreateDefaultSubobject<UWInventoryManager>(TEXT("Inventory"));
+	// ÄÁÅÙÃ÷ »ý¼º.	
+	mpInventoryManager = CreateDefaultSubobject<UWInventoryManager>(TEXT("Inventory"));
+	mpStatManager = CreateDefaultSubobject<UWStatManager>(TEXT("Stat"));
 	
 }
 
@@ -75,33 +78,13 @@ void AWPlayerCharacter::BeginPlay()
 	if (true == bInitialize)
 	{
 		// °¢ ÄÁÅÙÃ÷¿¡ À§Á¬ µî·Ï.
-		mpInventory->InitWidget(mpMainWidget->GetInventoryWidget());
+		mpInventoryManager->InitManager(mpMainWidget->GetInventoryWidget());
+		mpStatManager->InitManager(mpMainWidget->GetStatWidget());
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Create MainWidget Failed."));
+		WLOG_SCREEN(TEXT("Create MainWidget Failed."));
 	}
-
-	/*if (IsValid(mMainWidgetClass))
-	{
-		mpMainWidget = CreateWidget<UWMainWidget>(GetWorld(), mMainWidgetClass);
-		if (mpMainWidget != nullptr)
-		{
-			mpMainWidget->AddToViewport();
-		}
-
-		// ¸ÞÀÎ À§Á¬ ÃÊ±âÈ­ È®ÀÎ.
-		bool bInitialize = mpMainWidget->InitWidget(this);
-		if (true == bInitialize)
-		{
-			// °¢ ÄÁÅÙÃ÷¿¡ À§Á¬ µî·Ï.
-			//mpInventory->InitWidget(mpMainWidget->GetInventoryWidget());
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, TEXT("Create MainWidget Failed."));
-		}
-	}*/
 }
 
 void AWPlayerCharacter::Tick(float DeltaTime)
@@ -116,7 +99,9 @@ void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputC
 
 	pPlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Jump);
 	pPlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Interact);
+	pPlayerInputComponent->BindAction(TEXT("ToggleMouseCursor"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleMouseCursor);
 	pPlayerInputComponent->BindAction(TEXT("ToggleInventory"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleInventory);
+	pPlayerInputComponent->BindAction(TEXT("ToggleStat"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleStat);
 
 	pPlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AWPlayerCharacter::MoveForward);
 	pPlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AWPlayerCharacter::MoveRight);
@@ -127,6 +112,11 @@ void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputC
 void AWPlayerCharacter::DelTargetActor()
 {
 	mpTargetActor = nullptr;
+}
+
+bool AWPlayerCharacter::MotifyStatAttribute(EStatAttributeType statType, float value)
+{
+	return mpStatManager->ModifyStatAttribute(statType, value);
 }
 
 void AWPlayerCharacter::Interact()
@@ -174,17 +164,45 @@ void AWPlayerCharacter::Interact()
 // 	}
 }
 
+void AWPlayerCharacter::ToggleMouseCursor()
+{
+	mpPlayerController->bShowMouseCursor = !mpPlayerController->bShowMouseCursor;
+	if (mpPlayerController->bShowMouseCursor)
+	{
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(mpPlayerController);
+	}
+	else
+	{
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(mpPlayerController);
+	}
+}
+
 void AWPlayerCharacter::ToggleInventory()
 {
-	if (nullptr != mpInventory)
+	if (nullptr != mpInventoryManager)
 	{
-		if (mpInventory->GetIsOpen())
+		if (mpInventoryManager->GetIsOpen())
 		{
-			mpInventory->Close();
+			mpInventoryManager->Close();
 		}
 		else
 		{
-			mpInventory->Open();
+			mpInventoryManager->Open();
+		}
+	}
+}
+
+void AWPlayerCharacter::ToggleStat()
+{
+	if (nullptr != mpStatManager)
+	{
+		if (mpStatManager->GetIsOpen())
+		{
+			mpStatManager->Close();
+		}
+		else
+		{
+			mpStatManager->Open();
 		}
 	}
 }

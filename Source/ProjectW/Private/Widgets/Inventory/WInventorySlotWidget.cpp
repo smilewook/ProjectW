@@ -3,23 +3,25 @@
 
 #include "WInventorySlotWidget.h"
 #include "ProjectWStructure.h"
+#include "WSlotDragDropOperation.h"
 #include "Items/WItemBase.h"
 #include "Managers/WInventoryManager.h"
 #include "Player/WPlayerCharacter.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
 
-#include <Components/Button.h>
+#include <Components/Border.h>
 #include <Components/Image.h>
 #include <Components/TextBlock.h>
 #include <Kismet/GameplayStatics.h>
+#include <WidgetBlueprintLibrary.h>
 
 
-void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventory, FInventorySlotInfo* pSlotInfo)
+void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventoryManager, FInventorySlotInfo* pSlotInfo)
 {
-	WCHECK(nullptr != pInventory);
-	if (nullptr != pInventory)
+	WCHECK(nullptr != pInventoryManager);
+	if (nullptr != pInventoryManager)
 	{
-		mpInventory = pInventory;
+		mpInventoryManager = pInventoryManager;
 	}
 	WCHECK(nullptr != pSlotInfo);
 	if (nullptr != pSlotInfo)
@@ -28,6 +30,8 @@ void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventory, FInventor
 
 		mpSlotInfo->pSlotWidget = this;
 	}
+
+	
 }
 
 void UWInventorySlotWidget::UpdateWidget()
@@ -36,7 +40,6 @@ void UWInventorySlotWidget::UpdateWidget()
 	{
 		if (nullptr != mpSlotInfo->ItemClass)
 		{
-			WLOG(Warning, TEXT("UWInventorySlotWidget::UpdateWidget() mpSlotInfo->pItemClass"));
 			mpIcon->SetBrushFromTexture(mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().pIcon);
 
 			if (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().IsStackAble && (mpSlotInfo->Amount > 0))
@@ -71,9 +74,17 @@ void UWInventorySlotWidget::Hide()
 	mpAmountText->SetVisibility(ESlateVisibility::Hidden);
 }
 
-FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent)
+void UWInventorySlotWidget::NativeConstruct()
 {
-	if (mpSlotInfo->ItemClass)
+	mOnColor = FLinearColor(1.0f, 1.0f, 1.0f);
+	mOverColor = FLinearColor(0.9f, 0.3f, 0.0f);
+
+	mpOutline->SetBrushColor(mOnColor);
+}
+
+FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent)
+{
+	if (nullptr != mpSlotInfo->ItemClass)
 	{
 		// 마우스 왼쪽 클릭.
 		if (inMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
@@ -104,31 +115,80 @@ FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry & inGeomet
 
 void UWInventorySlotWidget::NativeOnDragDetected(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent, UDragDropOperation *& outOperation)
 {
-	// 드래그 시작
+	// 드래그 시작. SlotDragDropOperation 생성.
+	UWSlotDragDropOperation* pSlotOperation = NewObject<UWSlotDragDropOperation>(UWSlotDragDropOperation::StaticClass());
+	pSlotOperation->SetDraggedSlot(this);
+	pSlotOperation->DefaultDragVisual = this;
+	pSlotOperation->Pivot = EDragPivot::MouseDown;
+
+	outOperation = pSlotOperation;
 }
 
 bool UWInventorySlotWidget::NativeOnDrop(const FGeometry & inGeometry, const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
 {
  	// 드랍 되었을때
+	if (UWSlotDragDropOperation* pSlotOperation = Cast<UWSlotDragDropOperation>(inOperation))
+	{
+		UWInventorySlotWidget* pFromSlot = Cast<UWInventorySlotWidget>(pSlotOperation->GetDraggedSlot());
+		FInventorySlotInfo* pFromSlotInfo = pFromSlot->GetSlotInfo();
+		if (nullptr == mpSlotInfo->ItemClass)
+		{
+			mpInventoryManager->MoveItem(mpSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+		}
+		else
+		{
+			if ((pFromSlot != this) && (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemID() == pFromSlotInfo->ItemClass.GetDefaultObject()->GetItemID()))
+			{
+				mpInventoryManager->CombineItem(mpSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+			}
+			else if (pFromSlot == this)
+			{
+				return true;
+			}
+			else
+			{
+				mpInventoryManager->SwapItem(mpSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+			}
+		}
+		return true;
+	}
 	return false;
+}
+
+void UWInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
+{
+	// 빈 영역으로 드랍될때 호출되네..
+	WLOG(Warning, TEXT("drop cancelled!"));
+
+	
 }
 
 void UWInventorySlotWidget::NativeOnMouseEnter(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent)
 {
 	// 마우스 오버
+	mpOutline->SetBrushColor(mOverColor);
 }
 
 void UWInventorySlotWidget::NativeOnMouseLeave(const FPointerEvent & inMouseEvent)
 {
 	// 마우스 아웃
+	mpOutline->SetBrushColor(mOnColor);
 }
 
 void UWInventorySlotWidget::NativeOnDragEnter(const FGeometry & inGeometry, const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
 {
 	// 드래그 오버
+	if (UWSlotDragDropOperation* pSlotOperation = Cast<UWSlotDragDropOperation>(inOperation))
+	{
+		mpOutline->SetBrushColor(mOverColor);
+	}
 }
 
 void UWInventorySlotWidget::NativeOnDragLeave(const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
 {
 	// 드래그 아웃
+	if (UWSlotDragDropOperation* pSlotOperation = Cast<UWSlotDragDropOperation>(inOperation))
+	{
+		mpOutline->SetBrushColor(mOnColor);
+	}
 }

@@ -3,6 +3,7 @@
 
 #include "WContentWidgetBase.h"
 #include "Widgets/WMainWidget.h"
+#include "WContentsDragDropOperation.h"
 
 
 void UWContentWidgetBase::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager)
@@ -40,5 +41,15 @@ void UWContentWidgetBase::NativeOnDragDetected(const FGeometry& inGeometry, cons
 	FVector2D mousePos = inMouseEvent.GetScreenSpacePosition();
 
 	// 절대 좌표(마우스 위치)를 (Geometry)로컬 좌표로 변환.
-	FVector2D localPos = inGeometry.AbsoluteToLocal(mousePos);
+	FVector2D localPos = inGeometry.AbsoluteToLocal(mousePos);	// 위젯 DragDropOperation 생성.
+	UWContentsDragDropOperation* pWidgetOperation = NewObject<UWContentsDragDropOperation>(UWContentsDragDropOperation::StaticClass());
+	pWidgetOperation->InitOperation(mpMainWidget, this, localPos);
+	pWidgetOperation->DefaultDragVisual = this;
+	pWidgetOperation->Pivot = EDragPivot::MouseDown;
+
+	// 현재 위젯 제거.
+	RemoveFromParent();
+
+	outOperation = pWidgetOperation;
+	//WLOG(Warning, TEXT("UWInventorySlotWidget::NativeOnDragDetected()"));
 }

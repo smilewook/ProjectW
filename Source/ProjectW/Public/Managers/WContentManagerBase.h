@@ -19,8 +19,8 @@ class PROJECTW_API UWContentManagerBase : public UActorComponent
 public:	
 	UWContentManagerBase();
 
-	virtual void InitWidget(UWContentWidgetBase* pWidget);
-	virtual void UpdateWidget();
+	virtual void InitManager(UWContentWidgetBase* pWidget);
+	virtual void UpdateManager();
 
 	virtual void Open();
 	virtual void Close();

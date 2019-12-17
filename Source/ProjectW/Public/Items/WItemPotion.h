@@ -4,31 +4,27 @@
 
 #include "ProjectW.h"
 #include "Items/WItemBase.h"
-#include "WItemEquipment.generated.h"
+#include "WItemPotion.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTW_API AWItemEquipment : public AWItemBase
+class PROJECTW_API AWItemPotion : public AWItemBase
 {
 	GENERATED_BODY()
 	
-	/* Methods */
+		/* Methods */
 public:
-	AWItemEquipment();
+	AWItemPotion();
 
 	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo);
 
 	/* Get/Set */
-	FORCEINLINE const FName& GetSocketName() const { return mSocketName; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* mpStaticMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Configuration")
-	FName mSocketName;
 
 	/* Properties */
 public:

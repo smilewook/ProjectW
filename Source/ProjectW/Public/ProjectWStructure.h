@@ -36,15 +36,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
 	class UTexture2D* pIcon;
 
-	// 사용 가능?
+	// 사용 가능.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
 	bool IsUseAble;
 
-	// 사용 텍스트.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
-	FText UseText;
-
-	// 누적 가능?
+	// 누적 가능.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
 	bool IsStackAble;
 
@@ -52,13 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
 	EItemType ItemType;
 
-	// 아이템 무게.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
-	float Weight;
-
-	// 레시피.
-// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
-// 	TArray<FInventorySlot> Recipe;
+	// 아이템 속성.
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
+ 	TMap<EStatAttributeType, float> ItemStats;
 
 	// 가격.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInfo")
@@ -118,4 +110,28 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
 	int32 Amount;
+};
+
+USTRUCT(BlueprintType)
+struct FStatInfo
+{
+	GENERATED_BODY();
+
+	FStatInfo() : MaxValue(0.0f), CurrentValue(0.0f) {};
+
+	FStatInfo(EStatAttributeType statType, float maxValue, float currentValue) :
+		MaxValue(maxValue), CurrentValue(currentValue) {};
+
+public:
+	// 스탯 최대 값.
+	UPROPERTY(EditAnywhere, Category = "StatInfo")
+	float MaxValue;
+
+	// 스탯 현재 값.
+	UPROPERTY(EditAnywhere, Category = "StatInfo")
+	float CurrentValue;
+
+	// 레벨업 스탯 증가치.
+	UPROPERTY(EditAnywhere, Category = "StatInfo")
+	float IncreaseFromLevelUp;
 };

@@ -13,5 +13,6 @@ AWItemEquipment::AWItemEquipment()
 bool AWItemEquipment::OnUse(FInventorySlotInfo* const pSlotInfo)
 {
 	// 플레이어 장비 장착.
-	return false;
+	WLOG(Warning, TEXT("AWItemEquipment::OnUse"));
+	return true;
 }

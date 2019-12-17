@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "WPickupTextWidget.generated.h"
 
+
+class UTextBlock;
+
+
 /**
  * 
  */
@@ -16,11 +20,12 @@ class PROJECTW_API UWPickupTextWidget : public UUserWidget
 	
 	/* Methods */
 public:
-	FORCEINLINE class UTextBlock* const& GetNameText() const { return mpNameText; }
+	FORCEINLINE UTextBlock* const& GetNameText() const { return mpNameText; }
 
+	/* Properties */
 protected:
 	UPROPERTY()
-	class UTextBlock* mpNameText;
+	UTextBlock* mpNameText;
 
 
 };
