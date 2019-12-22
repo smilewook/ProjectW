@@ -53,3 +53,17 @@ void UWContentWidgetBase::NativeOnDragDetected(const FGeometry& inGeometry, cons
 	outOperation = pWidgetOperation;
 	//WLOG(Warning, TEXT("UWInventorySlotWidget::NativeOnDragDetected()"));
 }
+
+FVector2D UWContentWidgetBase::GetWidgetCenterLocation() const
+{
+	FGeometry geometry = mpMainWidget->GetCachedGeometry();
+	//FVector2D position = geometry.AbsoluteToLocal(this->GetCachedGeometry().GetAbsolutePosition()) + this->GetCachedGeometry().GetLocalSize() / 2.0f;
+
+	FVector2D absolutePosition = this->GetCachedGeometry().GetAbsolutePosition();
+	FVector2D localPosition = geometry.AbsoluteToLocal(this->GetCachedGeometry().GetAbsolutePosition());
+	FVector2D localSize = this->GetCachedGeometry().GetLocalSize();
+	WLOG(Warning, TEXT("absolutePosition X : %f, Y : %f"), absolutePosition.X, absolutePosition.Y);
+	WLOG(Warning, TEXT("localPosition X : %f, Y : %f"), localPosition.X, localPosition.Y);
+	WLOG(Warning, TEXT("localSize X : %f, Y : %f"), localSize.X, localSize.Y);
+	return localPosition;
+}

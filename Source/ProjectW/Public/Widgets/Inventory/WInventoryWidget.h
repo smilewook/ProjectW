@@ -12,6 +12,7 @@ struct FInventorySlotInfo;
 class UWMainWidget;
 class UWInventorySlotWidget;
 
+class UBorder;
 class UButton;
 class UScrollBox;
 class UTextBlock;
@@ -32,6 +33,9 @@ public:
 
 	bool CreateSlot(FInventorySlotInfo* pSlotInfo, int32 row, int32 column);
 
+	/* Get/Set */
+	void SetModal(bool bModal);
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -46,6 +50,9 @@ private:
 public:
 
 protected:
+	UPROPERTY()
+	UBorder* mpModal;
+
 	UPROPERTY()
 	UTextBlock* mpNameText;
 

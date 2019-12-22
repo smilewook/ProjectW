@@ -38,11 +38,11 @@ void UWInventorySlotWidget::UpdateWidget()
 {
 	if (nullptr != mpSlotInfo)
 	{
-		if (nullptr != mpSlotInfo->ItemClass)
+		if (nullptr != mpSlotInfo->pItemClass)
 		{
-			mpIcon->SetBrushFromTexture(mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().pIcon);
+			mpIcon->SetBrushFromTexture(mpSlotInfo->pItemClass->GetItemInfo().pIcon);
 
-			if (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().IsStackAble && (mpSlotInfo->Amount > 0))
+			if (mpSlotInfo->pItemClass->GetItemInfo().IsStackAble && (mpSlotInfo->Amount > 0))
 			{
 				mpAmountText->SetText(FText::AsNumber(mpSlotInfo->Amount));
 				mpAmountText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -84,7 +84,7 @@ void UWInventorySlotWidget::NativeConstruct()
 
 FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent)
 {
-	if (nullptr != mpSlotInfo->ItemClass)
+	if (nullptr != mpSlotInfo->pItemClass)
 	{
 		// 마우스 왼쪽 클릭.
 		if (inMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
@@ -98,9 +98,9 @@ FReply UWInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& inGeometr
 		// 마우스 오른쪽 클릭.
 		if (inMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
 		{
-			if (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo().IsUseAble)
+			if (mpSlotInfo->pItemClass->GetItemInfo().IsUseAble)
 			{
-				if (mpSlotInfo->ItemClass.GetDefaultObject()->OnUse(mpSlotInfo))
+				if (mpSlotInfo->pItemClass->OnUse(mpSlotInfo))
 				{
 					UpdateWidget();
 				}
@@ -131,13 +131,13 @@ bool UWInventorySlotWidget::NativeOnDrop(const FGeometry & inGeometry, const FDr
 	{
 		UWInventorySlotWidget* pFromSlot = Cast<UWInventorySlotWidget>(pSlotOperation->GetDraggedSlot());
 		FInventorySlotInfo* pFromSlotInfo = pFromSlot->GetSlotInfo();
-		if (nullptr == mpSlotInfo->ItemClass)
+		if (nullptr == mpSlotInfo->pItemClass)
 		{
 			mpInventoryManager->MoveItem(mpSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
 		}
 		else
 		{
-			if ((pFromSlot != this) && (mpSlotInfo->ItemClass.GetDefaultObject()->GetItemID() == pFromSlotInfo->ItemClass.GetDefaultObject()->GetItemID()))
+			if ((pFromSlot != this) && (mpSlotInfo->pItemClass->GetItemID() == pFromSlotInfo->pItemClass->GetItemID()))
 			{
 				mpInventoryManager->CombineItem(mpSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
 			}
@@ -160,7 +160,10 @@ void UWInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent & inDragD
 	// 빈 영역으로 드랍될때 호출되네..
 	WLOG(Warning, TEXT("drop cancelled!"));
 
-	
+	if (nullptr != mpSlotInfo)
+	{
+		mpInventoryManager->ThrowAwayItem(mpSlotInfo->SlotIndex);
+	}	
 }
 
 void UWInventorySlotWidget::NativeOnMouseEnter(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent)

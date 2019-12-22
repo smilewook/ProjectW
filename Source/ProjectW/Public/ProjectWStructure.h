@@ -10,7 +10,9 @@
 
 
 class AWItemBase;
+class AWItemEquipment;
 
+class UWEquipSlotWidget;
 class UWInventorySlotWidget;
 
 
@@ -76,7 +78,7 @@ struct FItemContents : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemContent")
-	TSubclassOf<AWItemBase> ItemClass;
+	AWItemBase* pItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemContent")
 	int32 MinAmount;
@@ -93,10 +95,10 @@ struct FInventorySlotInfo
 {
 	GENERATED_BODY()
 
-	FInventorySlotInfo() : SlotIndex(0), pSlotWidget(nullptr), ItemClass(nullptr), Amount(0) {};
+	FInventorySlotInfo() : SlotIndex(0), pSlotWidget(nullptr), pItemClass(nullptr), Amount(0) {};
 
-	FInventorySlotInfo(int32 slotIndex, UWInventorySlotWidget* pSlot, const TSubclassOf<AWItemBase> itemClass, int32 amount)
-		: SlotIndex(slotIndex), pSlotWidget(pSlot), ItemClass(itemClass), Amount(amount) {};
+	FInventorySlotInfo(int32 slotIndex, UWInventorySlotWidget* pSlot, AWItemBase* pItem, int32 amount)
+		: SlotIndex(slotIndex), pSlotWidget(pSlot), pItemClass(pItem), Amount(amount) {};
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
@@ -106,7 +108,7 @@ public:
 	UWInventorySlotWidget* pSlotWidget;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
-	TSubclassOf<AWItemBase> ItemClass;
+	AWItemBase* pItemClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventorySlotInfo")
 	int32 Amount;
@@ -134,4 +136,19 @@ public:
 	// 레벨업 스탯 증가치.
 	UPROPERTY(EditAnywhere, Category = "StatInfo")
 	float IncreaseFromLevelUp;
+};
+
+USTRUCT(BlueprintType)
+struct FEquipmentSlotInfo
+{
+	GENERATED_BODY()
+
+	FEquipmentSlotInfo() : pItemClass(nullptr), pSlotWidget(nullptr) {};
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = "EquipmentSlotInfo")
+	AWItemEquipment* pItemClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "EquipmentSlotInfo")
+	UWEquipSlotWidget* pSlotWidget;
 };

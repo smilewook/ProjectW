@@ -3,34 +3,38 @@
 #pragma once
 
 #include "ProjectW.h"
+#include "ProjectWEnums.h"
+#include "ProjectWStructure.h"
 #include "Blueprint/UserWidget.h"
-#include "WInventorySlotWidget.generated.h"
+#include "WEquipSlotWidget.generated.h"
 
 
-class UWInventoryManager;
-class UWItemDestroyWidget;
+class UWEquipmentManager;
+class UBorder;
+class UImage;
+class UTexture2D;
 
-struct FInventorySlotInfo;
+struct FEquipmentSlotInfo;
 
 
 /**
  * 
  */
 UCLASS()
-class PROJECTW_API UWInventorySlotWidget : public UUserWidget
+class PROJECTW_API UWEquipSlotWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	/* Methods */
+		/* Methods */
 public:
-	void InitWidget(UWInventoryManager* pInventory, FInventorySlotInfo* pSlotInfo);
+	void InitWidget(UWEquipmentManager* pEquipment, FEquipmentSlotInfo* pSlotInfo);
 	void UpdateWidget();
 
 	void Show();
 	void Hide();
 
 	/* Get/Set */
-	FORCEINLINE FInventorySlotInfo* const& GetSlotInfo() const { return mpSlotInfo; }
+	FORCEINLINE FEquipmentSlotInfo* const& GetSlotInfo() const { return mpSlotInfo; }
 
 protected:
 	virtual void NativeConstruct() override;
@@ -48,8 +52,8 @@ protected:
 public:
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
-	class UBorder* mpOutline;
+	UPROPERTY()
+	UBorder* mpOutline;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
 	FLinearColor mOnColor;
@@ -57,15 +61,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
 	FLinearColor mOverColor;
 
-	UPROPERTY()
-	class UImage* mpIcon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
+	FLinearColor mNoEquipColor;
 
 	UPROPERTY()
-	class UTextBlock* mpAmountText;
+	UBorder* mpBackground;
 
-	FInventorySlotInfo* mpSlotInfo = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
+	UTexture2D* mpBackgroundImage;
 
-	UWInventoryManager* mpInventoryManager;
+	UPROPERTY()
+	UImage* mpIcon;
 
-	UWItemDestroyWidget* mpItemDestroy;
+	FEquipmentSlotInfo* mpSlotInfo = nullptr;
+
+	UWEquipmentManager* mpEquipmentManager;
+
+private:
+	EItemEquipType mItemEquipType;
 };

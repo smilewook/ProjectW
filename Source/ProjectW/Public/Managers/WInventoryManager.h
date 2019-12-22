@@ -26,13 +26,19 @@ public:
 
 	virtual void InitManager(UWContentWidgetBase* pWidget) override;
 	virtual void UpdateManager() override;
+	virtual void Close() override;
 
-	bool AddItem(const TSubclassOf<AWItemBase>& newItemClass, int32 amount);
-	bool AddItemByIndex(const int32& slotIndex, const TSubclassOf<AWItemBase>& newItemClass, int32 amount);
+	bool AddItem(AWItemBase* newItemClass, int32 amount = 1);
+	bool AddItemByIndex(const int32& slotIndex, AWItemBase* newItemClass, int32 amount);
 	bool RemoveItem(const int32& slotIndex);
 	void MoveItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void SwapItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void CombineItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
+	void ThrowAwayItem(const int32& slotIndex);
+
+	/* Get/Set */
+	FORCEINLINE const TArray<FInventorySlotInfo>& GetSlots() const { return mSlots; }
+	FORCEINLINE const FInventorySlotInfo& GetSlot(int32 slotIndex) const { return mSlots[slotIndex]; }
 
 protected:
 	virtual void BeginPlay() override;

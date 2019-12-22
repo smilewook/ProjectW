@@ -6,6 +6,7 @@
 #include "Managers/WContentManagerBase.h"
 #include "Managers/WInventoryManager.h"
 
+#include <Components/Border.h>
 #include <Components/Button.h>
 #include <Components/ScrollBox.h>
 #include <Components/TextBlock.h>
@@ -16,6 +17,8 @@
 void UWInventoryWidget::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager)
 {
 	UWContentWidgetBase::InitWidget(pMainWidget, pContentManager);
+
+	SetModal(false);
 }
 
 bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int row, int column)
@@ -42,6 +45,18 @@ bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int row, int c
 	{
 		WLOG(Warning, TEXT("UWInventoryWidget::CreateSlots() Failed!"));
 		return false;
+	}
+}
+
+void UWInventoryWidget::SetModal(bool bModal)
+{
+	if(true == bModal)
+	{
+		mpModal->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		mpModal->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

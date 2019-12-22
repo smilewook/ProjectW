@@ -28,16 +28,16 @@ void UWStatWidget::CreateStatAttribute()
 		{
 			UWStatLabelWidget* pStatLabelWidget = CreateWidget<UWStatLabelWidget>(GetWorld(), mStatLabelWidgetClass);
 			
-			if (EStatAttributeType::EStatAttribute_None == stat.Key || EStatAttributeType::EStatAttribute_Special == stat.Key)
-			{
-				continue;
-			}				
-
 			pStatLabelWidget->InitWidget(stat.Key, mpStatManager);
 			pStatLabelWidget->UpdateWidget(stat.Value);
 			mpStatManager->SetStatAttribute(pStatLabelWidget);
 
-			if (stat.Key < EStatAttributeType::EStatAttribute_Special)
+			if (EStatAttributeType::StatAttribute_None == stat.Key || EStatAttributeType::StatAttribute_Special == stat.Key)
+			{
+				continue;
+			}
+
+			if (stat.Key < EStatAttributeType::StatAttribute_Special)
 			{
 				mpDefaultStats->AddChildToVerticalBox(pStatLabelWidget);
 			}

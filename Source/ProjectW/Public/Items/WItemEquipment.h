@@ -3,8 +3,14 @@
 #pragma once
 
 #include "ProjectW.h"
-#include "Items/WItemBase.h"
+#include "ProjectWEnums.h"
+#include "ProjectWStructure.h"
+#include "Items//WItemBase.h"
 #include "WItemEquipment.generated.h"
+
+
+struct FInventorySlotInfo;
+
 
 /**
  * 
@@ -21,19 +27,18 @@ public:
 	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo);
 
 	/* Get/Set */
+	FORCEINLINE const EItemEquipType& GetItemEquipType() const { return mItemEquipType; }
 	FORCEINLINE const FName& GetSocketName() const { return mSocketName; }
 
+	/* Properties */
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	UStaticMeshComponent* mpStaticMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Configuration")
+	UPROPERTY(EditDefaultsOnly, Category = "Configuration | Equip")
 	FName mSocketName;
 
-	/* Properties */
-public:
+	UPROPERTY(EditAnywhere, Category = "Configuration | Equip")
+	EItemEquipType mItemEquipType;
 
-protected:
-
-private:
 };

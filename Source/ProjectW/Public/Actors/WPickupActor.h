@@ -55,10 +55,10 @@ private:
 
 	// 아이템 마우스 오버아웃
 	UFUNCTION()
-	void OnHovered(UPrimitiveComponent* pTouchedComponent);
+	void OnOvered(/*UPrimitiveComponent* pTouchedComponent*/);
 
 	UFUNCTION()
-	void OnUnhovered(UPrimitiveComponent* pTouchedComponent);
+	void OnOuted(/*UPrimitiveComponent* pTouchedComponent*/);
 
 	/* Properties */
 protected:
@@ -81,9 +81,6 @@ protected:
 	UMaterial* mpHoveredMaterial;	
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
-	FString mName;
-
-	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
 	int32 mID;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
@@ -92,12 +89,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
 	int32 mAmount;
 
-	bool mIsHovered;
-	bool mIsInRange;
-	bool mHasPickupCommand;
-
 	UMaterialInterface* mpOriginalMaterial;
 
 	AWPlayerCharacter* mpInteractionPlayer;
 
+private:
+	FString mName;
+
+	bool mIsHovered;
+	bool mIsInRange;
+	bool mHasPickupCommand;
+	
 };

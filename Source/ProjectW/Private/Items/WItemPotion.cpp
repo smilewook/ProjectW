@@ -2,7 +2,6 @@
 
 
 #include "WItemPotion.h"
-#include "ProjectWEnums.h"
 #include "Player/WPlayerCharacter.h"
 
 
@@ -23,9 +22,20 @@ bool AWItemPotion::OnUse(FInventorySlotInfo* const pSlotInfo)
 		{
 			bSuccess = mpPlayer->MotifyStatAttribute(itemStat.Key, itemStat.Value);
 
-			if (false == bSuccess)
+			if (true == bSuccess)
 			{
-				break;
+				pSlotInfo->Amount--;
+				if (pSlotInfo->Amount <= 0)
+				{
+					pSlotInfo->pItemClass = nullptr;
+					Destroy();
+				}
+				
+				return bSuccess;
+			}
+			else
+			{
+				WLOG(Warning, TEXT("AWItemPotion::OnUse() is failed!!"));
 			}
 		}
 	}

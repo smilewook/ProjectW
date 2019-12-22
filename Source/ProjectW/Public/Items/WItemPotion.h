@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ProjectW.h"
+#include "ProjectWEnums.h"
 #include "Items/WItemBase.h"
 #include "WItemPotion.generated.h"
 
@@ -20,16 +21,9 @@ public:
 
 	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo);
 
-	/* Get/Set */
-
+	/* Properties */
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	UStaticMeshComponent* mpStaticMesh;
 
-	/* Properties */
-public:
-
-protected:
-
-private:
 };

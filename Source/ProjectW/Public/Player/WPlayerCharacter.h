@@ -12,6 +12,7 @@ class AWPickupActor;
 class AWPlayerController;
 class AWWeapon;
 
+class UWEquipmentManager;
 class UWInventoryManager;
 class UWStatManager;
 class UWMainWidget;
@@ -35,9 +36,10 @@ public:
 	bool MotifyStatAttribute(EStatAttributeType statType, float value);
 	
 	/* Get/Set */
-	FORCEINLINE UWMainWidget* const& GetMainWidget() const { return mpMainWidget; }
+	FORCEINLINE UWMainWidget*		const& GetMainWidget() const { return mpMainWidget; }
 	FORCEINLINE UWInventoryManager* const& GetInventoryManager() const { return mpInventoryManager; }
-	FORCEINLINE UWStatManager* const& GetStatManager() const { return mpStatManager; }
+	FORCEINLINE UWStatManager*		const& GetStatManager() const { return mpStatManager; }
+	FORCEINLINE UWEquipmentManager* const& GetEquipmentManager() const { return mpEquipmentManager; }
 	
 	FORCEINLINE AWPickupActor* const& GetTargetActor() const { return mpTargetActor; }
 
@@ -85,6 +87,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "ContentsManager")
 	UWStatManager* mpStatManager;
+
+	UPROPERTY(VisibleAnywhere, Category = "ContentsManager")
+	UWEquipmentManager* mpEquipmentManager;
 
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	AWPickupActor* mpTargetActor;

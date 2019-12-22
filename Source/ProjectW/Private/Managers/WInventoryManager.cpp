@@ -4,8 +4,11 @@
 #include "WInventoryManager.h"
 #include "Actors/WPickupActor.h"
 #include "Items/WItemBase.h"
+#include "Widgets/WMainWidget.h"
+#include "Widgets/WContentWidgetBase.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
+#include "Widgets/Misc/WItemDestroyWidget.h"
 
 #include <UserWidget.h>
 
@@ -29,7 +32,6 @@ void UWInventoryManager::CreateSlot()
 	mSlots.SetNum(mSlotMaxNum);
 
 	UWInventoryWidget* pWidget = Cast<UWInventoryWidget>(mpWidget);
-
 	if (nullptr != pWidget)
 	{
 		for (int i = 0; i < mSlots.Num(); ++i)
@@ -49,17 +51,26 @@ void UWInventoryManager::UpdateManager()
 	// something like that
 }
 
-bool UWInventoryManager::AddItem(const TSubclassOf<AWItemBase>& newItemClass, int32 amount)
+void UWInventoryManager::Close()
+{
+	UWContentManagerBase::Close();
+
+	// 인벤토리와 관련된 컨텐츠&위젯 인터렉션.
+	UWItemDestroyWidget* itemDestroyWidget = mpWidget->GetMainWidget()->GetItemDestroyWidget();
+	itemDestroyWidget->Hide();
+}
+
+bool UWInventoryManager::AddItem(AWItemBase* newItemClass, int32 amount)
 {
 	if (nullptr != newItemClass)
 	{
-		newItemClass.GetDefaultObject()->InitOwner(GetOwner());
+		newItemClass->InitOwner(GetOwner());
 
 		// 아이템 추가.
 		int slotIndex = SearchEmptySlotIndex();
 		if (slotIndex != -1)
 		{
-			mSlots[slotIndex].ItemClass = newItemClass;
+			mSlots[slotIndex].pItemClass = newItemClass;
 			mSlots[slotIndex].Amount = amount;
 			mSlots[slotIndex].pSlotWidget->UpdateWidget();
 
@@ -70,11 +81,11 @@ bool UWInventoryManager::AddItem(const TSubclassOf<AWItemBase>& newItemClass, in
 	return false;
 }
 
-bool UWInventoryManager::AddItemByIndex(const int32 & slotIndex, const TSubclassOf<AWItemBase>& newItemClass, int32 amount)
+bool UWInventoryManager::AddItemByIndex(const int32 & slotIndex, AWItemBase* newItemClass, int32 amount)
 {
 	if (true == IsEmptySlot(slotIndex))
 	{
-		mSlots[slotIndex].ItemClass = newItemClass;
+		mSlots[slotIndex].pItemClass = newItemClass;
 		mSlots[slotIndex].Amount = amount;
 		mSlots[slotIndex].pSlotWidget->UpdateWidget();
 
@@ -88,11 +99,11 @@ bool UWInventoryManager::AddItemByIndex(const int32 & slotIndex, const TSubclass
 bool UWInventoryManager::RemoveItem(const int32& slotIndex)
 {
 	// 아이템 제거.
-	if (nullptr != mSlots[slotIndex].ItemClass)
+	if (nullptr != mSlots[slotIndex].pItemClass)
 	{
 		mSlots[slotIndex].Amount = 0;
-		mSlots[slotIndex].ItemClass.GetDefaultObject()->Destroy();
-		mSlots[slotIndex].ItemClass = nullptr;
+		mSlots[slotIndex].pItemClass->Destroy();
+		mSlots[slotIndex].pItemClass = nullptr;
 		mSlots[slotIndex].pSlotWidget->UpdateWidget();
 
 		return true;
@@ -108,11 +119,11 @@ void UWInventoryManager::MoveItem(const int32& targetSlotIndex, const int32& fro
 {
 	// 아이템 이동.
 	mSlots[targetSlotIndex].Amount = mSlots[fromSlotIndex].Amount;
-	mSlots[targetSlotIndex].ItemClass = mSlots[fromSlotIndex].ItemClass;
+	mSlots[targetSlotIndex].pItemClass = mSlots[fromSlotIndex].pItemClass;
 
 	mSlots[fromSlotIndex].Amount = 0;
-	mSlots[fromSlotIndex].ItemClass.GetDefaultObject()->Destroy();
-	mSlots[fromSlotIndex].ItemClass = nullptr;
+	mSlots[fromSlotIndex].pItemClass->Destroy();
+	mSlots[fromSlotIndex].pItemClass = nullptr;
 
 	mSlots[targetSlotIndex].pSlotWidget->UpdateWidget();
 	mSlots[fromSlotIndex].pSlotWidget->UpdateWidget();
@@ -122,13 +133,13 @@ void UWInventoryManager::SwapItem(const int32& targetSlotIndex, const int32& fro
 {
 	// 아이템 위치 교체.
 	int32 tempAmount = mSlots[targetSlotIndex].Amount;
-	TSubclassOf<AWItemBase> tempItemClass = mSlots[targetSlotIndex].ItemClass;
+	AWItemBase* tempItemClass = mSlots[targetSlotIndex].pItemClass;
 
 	mSlots[targetSlotIndex].Amount = mSlots[fromSlotIndex].Amount;
-	mSlots[targetSlotIndex].ItemClass = mSlots[fromSlotIndex].ItemClass;
+	mSlots[targetSlotIndex].pItemClass = mSlots[fromSlotIndex].pItemClass;
 
 	mSlots[fromSlotIndex].Amount = tempAmount;
-	mSlots[fromSlotIndex].ItemClass = tempItemClass;
+	mSlots[fromSlotIndex].pItemClass = tempItemClass;
 
 	mSlots[targetSlotIndex].pSlotWidget->UpdateWidget();
 	mSlots[fromSlotIndex].pSlotWidget->UpdateWidget();
@@ -141,27 +152,31 @@ void UWInventoryManager::CombineItem(const int32& targetSlotIndex, const int32& 
 	mSlots[targetSlotIndex].Amount += mSlots[fromSlotIndex].Amount;
 
 	mSlots[fromSlotIndex].Amount = 0;
-	mSlots[fromSlotIndex].ItemClass.GetDefaultObject()->Destroy();
-	mSlots[fromSlotIndex].ItemClass = nullptr;
+	mSlots[fromSlotIndex].pItemClass->Destroy();
+	mSlots[fromSlotIndex].pItemClass = nullptr;
 
 	mSlots[targetSlotIndex].pSlotWidget->UpdateWidget();
 	mSlots[fromSlotIndex].pSlotWidget->UpdateWidget();
 }
 
-
+void UWInventoryManager::ThrowAwayItem(const int32 & slotIndex)
+{
+	// 아이템 파괴 위젯에 넘김.
+	UWItemDestroyWidget* itemDestroyWidget = mpWidget->GetMainWidget()->GetItemDestroyWidget();
+	FInventorySlotInfo* slotInfo = &(mSlots[slotIndex]);
+	itemDestroyWidget->Show(slotInfo);
+}
 
 void UWInventoryManager::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-
-
 int32 UWInventoryManager::SearchEmptySlotIndex()
 {
 	for (int32 i = 0; i < mSlots.Num(); i++)
 	{
-		if (nullptr == mSlots[i].ItemClass)
+		if (nullptr == mSlots[i].pItemClass)
 		{
 			return i;
 		}
@@ -172,6 +187,6 @@ int32 UWInventoryManager::SearchEmptySlotIndex()
 
 bool UWInventoryManager::IsEmptySlot(int32 slotIndex)
 {
-	return false == ::IsValid(mSlots[slotIndex].ItemClass);
+	return false == ::IsValid(mSlots[slotIndex].pItemClass);
 }
 

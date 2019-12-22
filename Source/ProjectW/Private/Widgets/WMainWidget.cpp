@@ -4,9 +4,11 @@
 #include "WMainWidget.h"
 #include "WSlotDragDropOperation.h"
 #include "Items/WItemBase.h"
+#include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
 #include "Managers/WStatManager.h"
 #include "Player/WPlayerCharacter.h"
+#include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
 #include "widgets/Misc/WItemDestroyWidget.h"
@@ -30,7 +32,7 @@ bool UWMainWidget::NativeOnDrop(const FGeometry& inGeometry, const FDragDropEven
 	{
 		UWInventorySlotWidget* pFromSlot = Cast<UWInventorySlotWidget>(pSlotOperation->GetDraggedSlot());
 		FInventorySlotInfo* pFromSlotInfo = pFromSlot->GetSlotInfo();
-		if (nullptr != pFromSlotInfo->ItemClass)
+		if (nullptr != pFromSlotInfo->pItemClass)
 		{
 			mpItemDestroyWidget->Show(pFromSlotInfo);
 			return true;
@@ -57,6 +59,7 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 	mpInventoryWidget->InitWidget(this, mpPlayer->GetInventoryManager());
 	mpItemDestroyWidget->InitWidget(this, mpPlayer->GetInventoryManager());
 	mpStatWidget->InitWidget(this, mpPlayer->GetStatManager());
+	mpEquipmentWidget->InitWidget(this, mpPlayer->GetEquipmentManager());
 
 	return true;
 }

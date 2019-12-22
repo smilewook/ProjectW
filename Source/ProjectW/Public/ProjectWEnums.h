@@ -47,24 +47,33 @@ enum class EItemType : uint8
 UENUM(BlueprintType)
 enum class EStatAttributeType : uint8
 {
-	EStatAttribute_None		UMETA(DisplayName = "None"),
-	EStatAttribute_Level	UMETA(DisplayName = "Level"),
-	EStatAttribute_Exp		UMETA(DisplayName = "Exp"),
-	EStatAttribute_HP		UMETA(DisplayName = "HP"),
-	EStatAttribute_MP		UMETA(DisplayName = "MP"),
-	EStatAttribute_Attack	UMETA(DisplayName = "ATK"),
-	EStatAttribute_Defense	UMETA(DisplayName = "DEF"),
-	EStatAttribute_Special	UMETA(DisplayName = "Special"),
-	EStatAttribute_Critical UMETA(DisplayName = "Critical"),
-	EStatAttribute_Dodge	UMETA(DisplayName = "Dodge"),
-	EStatAttribute_Max
+	StatAttribute_None		UMETA(DisplayName = "None"),
+	StatAttribute_Level		UMETA(DisplayName = "Level"),
+	StatAttribute_Exp		UMETA(DisplayName = "EXP"),
+	StatAttribute_HP		UMETA(DisplayName = "HP"),
+	StatAttribute_MP		UMETA(DisplayName = "MP"),
+	StatAttribute_Attack	UMETA(DisplayName = "ATK"),
+	StatAttribute_Defense	UMETA(DisplayName = "DEF"),
+	StatAttribute_Special	UMETA(DisplayName = "Special"),
+	StatAttribute_Critical	UMETA(DisplayName = "Critical"),
+	StatAttribute_Dodge		UMETA(DisplayName = "Dodge"),
+	StatAttribute_Max
 };
 
 UENUM(BlueprintType)
-enum class EEquipType : uint8
+enum class EItemEquipType : uint8
 {
-	Equip_None		UMETA(DisplayName = "None"),
-	Equip_Weapon	UMETA(DisplayName = "Weapon"),
-	Equip_Shield	UMETA(DisplayName = "Shield"),
-	Max
+	ItemEquip_None		UMETA(DisplayName = "None"),
+	ItemEquip_Weapon	UMETA(DisplayName = "Weapon"),
+	ItemEquip_Shield	UMETA(DisplayName = "Shield"),
+	ItemEquip_Head		UMETA(DisplayName = "Head"),
+	ItemEquip_Shoulder	UMETA(DisplayName = "Shoulder"),
+	ItemEquip_Top		UMETA(DisplayName = "Top"),
+	ItemEquip_Bottom	UMETA(DisplayName = "Bottom"),
+	ItemEquip_Glove		UMETA(DisplayName = "Glove"),
+	ItemEquip_Necklace	UMETA(DisplayName = "Necklace"),
+	ItemEquip_Earring	UMETA(DisplayName = "Earring"),
+	ItemEquip_Ring		UMETA(DisplayName = "Ring"),	
+	ItemEquip_Bracelet	UMETA(DisplayName = "Bracelet"),
+	ItemEquip_Max
 };

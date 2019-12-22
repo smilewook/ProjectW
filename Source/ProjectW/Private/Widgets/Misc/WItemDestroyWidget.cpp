@@ -3,10 +3,11 @@
 
 #include "WItemDestroyWidget.h"
 #include "ProjectWStructure.h"
-#include "WMainWidget.h"
-#include "WContentManagerBase.h"
 #include "Items/WItemBase.h"
+#include "Managers/WContentManagerBase.h"
 #include "Managers/WInventoryManager.h"
+#include "Widgets/WMainWidget.h"
+#include "Widgets/Inventory/WInventoryWidget.h"
 
 #include <Components/Button.h>
 #include <Components/TextBlock.h>
@@ -19,21 +20,41 @@ void UWItemDestroyWidget::InitWidget(UWMainWidget* pMainWidget, UWContentManager
 
 void UWItemDestroyWidget::Show(FInventorySlotInfo* pSlotInfo)
 {
+	UWInventoryWidget* pInventoryWidget = Cast<UWInventoryWidget>(mpMainWidget->GetInventoryWidget());
+	if (nullptr != pInventoryWidget)
+	{
+		FVector2D position = pInventoryWidget->GetWidgetCenterLocation();
+		WLOG(Warning, TEXT("X : %f, Y : %f"), position.X, position.Y);
+		//FGeometry geometry = mpMainWidget->GetCachedGeometry();
+		//FVector2D position = geometry.AbsoluteToLocal(this->GetCachedGeometry().GetAbsolutePosition()) + this->GetCachedGeometry().GetLocalSize() / 2.0f;
+		//this->SetPositionInViewport(position);
+
+		pInventoryWidget->SetModal(true);
+	}
+	
 	if (nullptr != pSlotInfo)
 	{
 		mpSlotInfo = pSlotInfo;
-		if (nullptr != mpSlotInfo->ItemClass)
+		if (nullptr != mpSlotInfo->pItemClass)
 		{
-			FItemInfo itemInfo = mpSlotInfo->ItemClass.GetDefaultObject()->GetItemInfo();
+			FItemInfo itemInfo = mpSlotInfo->pItemClass->GetItemInfo();
 			mpNameText->SetText(FText::FromName(itemInfo.Name));
 		}
 	}
+
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UWItemDestroyWidget::Hide()
 {
 	mpSlotInfo = nullptr;
 	SetVisibility(ESlateVisibility::Hidden);
+
+	UWInventoryWidget* pInventoryWidget = Cast<UWInventoryWidget>(mpMainWidget->GetInventoryWidget());
+	if (nullptr != pInventoryWidget)
+	{
+		pInventoryWidget->SetModal(false);
+	}
 }
 
 void UWItemDestroyWidget::NativeConstruct()

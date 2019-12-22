@@ -9,6 +9,7 @@
 
 class AWPlayerCharacter;
 
+class UWEquipmentWidget;
 class UWHUDWidget;
 class UWInventoryWidget;
 class UWItemDestroyWidget;
@@ -32,6 +33,7 @@ public:
 	FORCEINLINE UWInventoryWidget*		const& GetInventoryWidget() const { return mpInventoryWidget; }
 	FORCEINLINE UWItemDestroyWidget*	const& GetItemDestroyWidget() const { return mpItemDestroyWidget; }
 	FORCEINLINE UWStatWidget*			const& GetStatWidget() const { return mpStatWidget; }
+	FORCEINLINE UWEquipmentWidget*		const& GetEquipmentWidget() const { return mpEquipmentWidget; }
 
 protected:
 	virtual void NativeConstruct() override;
@@ -54,4 +56,7 @@ protected:
 
 	UPROPERTY()
 	UWStatWidget* mpStatWidget;
+
+	UPROPERTY()
+	UWEquipmentWidget* mpEquipmentWidget;
 };

@@ -27,6 +27,9 @@ public:
 	void InitWidget(EStatAttributeType statType, UWStatManager* pStatManager);
 	void UpdateWidget(FStatInfo statInfo);
 
+	/* Get/Set */
+	FORCEINLINE const EStatAttributeType& GetStatType() const { return mStatType; }
+
 protected:
 	virtual void NativeConstruct() override;
 

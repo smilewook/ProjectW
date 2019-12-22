@@ -27,6 +27,7 @@ public:
 	/* Get/Set */
 	FORCEINLINE UWMainWidget* const& GetMainWidget() const { return mpMainWidget; }
 	FORCEINLINE UWContentManagerBase* const& GetContentManager()  const { return mpContentManager; }
+	FORCEINLINE FVector2D GetWidgetCenterLocation() const;
 	
 	FORCEINLINE void SetMainWidget(UWMainWidget* pMainWidget) { mpMainWidget = pMainWidget; }
 	FORCEINLINE void SetContentManager(UWContentManagerBase* pContentManager) { mpContentManager = pContentManager; }

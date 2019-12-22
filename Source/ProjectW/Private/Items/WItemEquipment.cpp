@@ -2,6 +2,8 @@
 
 
 #include "WItemEquipment.h"
+#include "Managers/WEquipmentManager.h"
+#include "Player/WPlayerCharacter.h"
 
 
 AWItemEquipment::AWItemEquipment()
@@ -13,6 +15,22 @@ AWItemEquipment::AWItemEquipment()
 bool AWItemEquipment::OnUse(FInventorySlotInfo* const pSlotInfo)
 {
 	// 플레이어 장비 장착.
-	WLOG(Warning, TEXT("AWItemEquipment::OnUse"));
-	return true;
+	bool bSuccess = false;
+	if (nullptr != mpPlayer)
+	{
+		bSuccess = mpPlayer->GetEquipmentManager()->SetItemEquip(this);
+
+		if (true == bSuccess)
+		{
+			pSlotInfo->Amount = 0;
+			pSlotInfo->pItemClass = nullptr;
+
+			return bSuccess;
+		}
+		else
+		{
+			WLOG(Warning, TEXT("AWItemEquipment::OnUse() is failed!!"));
+		}
+	}
+	return bSuccess;
 }

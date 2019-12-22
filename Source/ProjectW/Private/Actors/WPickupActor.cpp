@@ -26,8 +26,7 @@ AWPickupActor::AWPickupActor()
 	mpTrigger->SetCollisionProfileName(TEXT("WItemBox"));
 
 	mpStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
-	mpStaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	mpStaticMesh->SetCollisionResponseToChannel(ECC_Visibility, ECollisionResponse::ECR_Block);
+	mpStaticMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	mpStaticMesh->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> MAT_DEFAULT(TEXT("/Game/Resources/Materials/M_DefaultPickup.M_DefaultPickup"));
@@ -53,7 +52,7 @@ AWPickupActor::AWPickupActor()
 		mpPickupText->SetVisibility(false);
 		mpPickupText->SetupAttachment(mpStaticMesh);
 	}
-
+	
 }
 
 void AWPickupActor::OnConstruction(const FTransform& transform)
@@ -79,7 +78,7 @@ void AWPickupActor::UpdateText()
 	UWPickupTextWidget* pPickupTextWidget = Cast<UWPickupTextWidget>(mpPickupText->GetUserWidgetObject());
 	if (nullptr != pPickupTextWidget)
 	{
-		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;		
+		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;
  		pPickupTextWidget->GetNameText()->SetText(FText::FromName(itemName));
 
 		mName = itemName.ToString();
@@ -91,7 +90,8 @@ void AWPickupActor::OnPickedUp(AWPlayerCharacter* pPlayer)
 	if (nullptr != pPlayer)
 	{
 		// 인벤토리에 바로 넣기.
-		bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mItemClass, mAmount);
+		AWItemBase* pItemClass = mItemClass.GetDefaultObject();
+		bool bSuccess = pPlayer->GetInventoryManager()->AddItem(pItemClass, mAmount);
 		if (true == bSuccess)
 		{
 			WLOG(Warning, TEXT("AWPickupActor::OnPickedUp Success!! : %s"), *GetName());
@@ -125,6 +125,9 @@ void AWPickupActor::BeginPlay()
 	Super::BeginPlay();
 
 	OnActivate();
+
+	//mpStaticMesh->OnBeginCursorOver.AddDynamic(this, &AWPickupActor::OnOvered);
+	//mpStaticMesh->OnEndCursorOver.AddDynamic(this, &AWPickupActor::OnOuted);
 	
 	mpTrigger->OnComponentBeginOverlap.AddDynamic(this, &AWPickupActor::OnOverlapBegin);
 	mpTrigger->OnComponentEndOverlap.AddDynamic(this, &AWPickupActor::OnOverlapEnd);	
@@ -145,6 +148,7 @@ void AWPickupActor::OnOverlapBegin(UPrimitiveComponent * overlappedComp, AActor 
 	{
 		OnInteract(pPlayer);		
 		mIsInRange = true;
+		OnOvered();
 	}
 }
 
@@ -157,21 +161,20 @@ void AWPickupActor::OnOverlapEnd(UPrimitiveComponent * overlappedComp, AActor * 
 	{
 		UnInteract();
 		mIsInRange = false;
+		OnOuted();
 	}
 }
 
-void AWPickupActor::OnHovered(UPrimitiveComponent* pTouchedComponent)
+void AWPickupActor::OnOvered(/*UPrimitiveComponent* pTouchedComponent*/)
 {
 	mIsHovered = true;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Hand;
 	mpStaticMesh->SetMaterial(0, mpHoveredMaterial);
-	mpPickupText->SetVisibility(true);
 }
 
-void AWPickupActor::OnUnhovered(UPrimitiveComponent* pTouchedComponent)
+void AWPickupActor::OnOuted(/*UPrimitiveComponent* pTouchedComponent*/)
 {
 	mIsHovered = false;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Default;
 	mpStaticMesh->SetMaterial(0, mpOriginalMaterial);
-	mpPickupText->SetVisibility(mIsInRange);
 }

@@ -12,7 +12,7 @@ UWStatManager::UWStatManager()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	mStats.Empty();
-	for (int32 i = 0; i < (int32)EStatAttributeType::EStatAttribute_Max; i++)
+	for (int32 i = 0; i < (int32)EStatAttributeType::StatAttribute_Max; i++)
 	{
 		mStats.Add(EStatAttributeType(i), FStatInfo());
 	}

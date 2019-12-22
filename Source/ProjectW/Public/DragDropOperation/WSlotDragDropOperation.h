@@ -7,7 +7,7 @@
 #include "WSlotDragDropOperation.generated.h"
 
 
-class UWInventorySlotWidget;
+class UUserWidget;
 
 
 /**
@@ -22,12 +22,12 @@ class PROJECTW_API UWSlotDragDropOperation : public UDragDropOperation
 public:
 
 	/* Get/Set */
-	FORCEINLINE UWInventorySlotWidget* const& GetDraggedSlot() const { return mpDraggerSlot; }
+	FORCEINLINE UUserWidget* const& GetDraggedSlot() const { return mpDraggerSlot; }
 
-	FORCEINLINE void SetDraggedSlot(UWInventorySlotWidget* const& pDraggedSlot) { mpDraggerSlot = pDraggedSlot; }
+	FORCEINLINE void SetDraggedSlot(UUserWidget* const& pDraggedSlot) { mpDraggerSlot = pDraggedSlot; }
 
 	/* Properties */
 protected:
-	UWInventorySlotWidget* mpDraggerSlot;
+	UUserWidget* mpDraggerSlot;
 
 };

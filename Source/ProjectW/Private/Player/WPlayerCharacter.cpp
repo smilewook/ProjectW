@@ -4,9 +4,11 @@
 #include "WPlayerCharacter.h"
 #include "WPlayerController.h"
 #include "Actors/WPickupActor.h"
+#include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
 #include "Managers/WStatManager.h"
 #include "Widgets/WMainWidget.h"
+#include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Stat/WStatWidget.h"
 
@@ -62,6 +64,7 @@ AWPlayerCharacter::AWPlayerCharacter()
 	// ÄÁÅÙÃ÷ »ý¼º.	
 	mpInventoryManager = CreateDefaultSubobject<UWInventoryManager>(TEXT("Inventory"));
 	mpStatManager = CreateDefaultSubobject<UWStatManager>(TEXT("Stat"));
+	mpEquipmentManager = CreateDefaultSubobject<UWEquipmentManager>(TEXT("Equipment"));
 	
 }
 
@@ -80,6 +83,7 @@ void AWPlayerCharacter::BeginPlay()
 		// °¢ ÄÁÅÙÃ÷¿¡ À§Á¬ µî·Ï.
 		mpInventoryManager->InitManager(mpMainWidget->GetInventoryWidget());
 		mpStatManager->InitManager(mpMainWidget->GetStatWidget());
+		mpEquipmentManager->InitManager(mpMainWidget->GetEquipmentWidget());
 	}
 	else
 	{
