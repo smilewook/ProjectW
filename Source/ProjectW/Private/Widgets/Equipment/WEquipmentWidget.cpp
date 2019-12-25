@@ -2,7 +2,10 @@
 
 
 #include "WEquipmentWidget.h"
+#include "DragDropOperation/WSlotDragDropOperation.h"
 #include "Managers/WContentManagerBase.h"
+#include "Managers/WEquipmentManager.h"
+#include "Widgets/Equipment/WEquipSlotWidget.h"
 
 #include <Components/Button.h>
 #include <Components/TextBlock.h>
@@ -13,6 +16,19 @@ void UWEquipmentWidget::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBa
 	UWContentWidgetBase::InitWidget(pMainWidget, pContentManager);
 
 	// 장비 슬롯 초기화.
+	UWEquipmentManager* pEquipmentManager = Cast<UWEquipmentManager>(mpContentManager);
+
+	mpWeaponSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetWeaponSlot());
+	mpShieldSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetShieldSlot());
+	mpHeadSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetHeadSlot());
+	mpShoulderSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetShoulderSlot());
+	mpTopSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetTopSlot());
+	mpBottomSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetBottomSlot());
+	mpGloveSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetGloveSlot());
+	mpNecklaceSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetNecklaceSlot());
+	mpEarringSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetEarringSlot());
+	mpRingSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetRingSlot());
+	mpBraceletSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetBraceletSlot());
 }
 
 void UWEquipmentWidget::NativeConstruct()
@@ -22,19 +38,14 @@ void UWEquipmentWidget::NativeConstruct()
 	mpCloseButton->OnClicked.AddDynamic(this, &UWEquipmentWidget::OnCloseButtonClicked);
 }
 
-FReply UWEquipmentWidget::NativeOnMouseButtonDown(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent)
+bool UWEquipmentWidget::NativeOnDrop(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation)
 {
-	if (inMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+	if (UWSlotDragDropOperation* pSlotOperation = Cast<UWSlotDragDropOperation>(inOperation))
 	{
-		return UWContentWidgetBase::NativeOnMouseButtonDown(inGeometry, inMouseEvent);
+		return true;
 	}
 
-	return FReply::Unhandled();
-}
-
-void UWEquipmentWidget::NativeOnDragDetected(const FGeometry & inGeometry, const FPointerEvent & inMouseEvent, UDragDropOperation *& outOperation)
-{
-	UWContentWidgetBase::NativeOnDragDetected(inGeometry, inMouseEvent, outOperation);
+	return false;
 }
 
 void UWEquipmentWidget::OnCloseButtonClicked()

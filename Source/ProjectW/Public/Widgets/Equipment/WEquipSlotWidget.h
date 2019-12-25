@@ -3,12 +3,12 @@
 #pragma once
 
 #include "ProjectW.h"
-#include "ProjectWEnums.h"
-#include "ProjectWStructure.h"
 #include "Blueprint/UserWidget.h"
+#include "ProjectWEnums.h"
 #include "WEquipSlotWidget.generated.h"
 
 
+class AWItemEquipment;
 class UWEquipmentManager;
 class UBorder;
 class UImage;
@@ -27,17 +27,17 @@ class PROJECTW_API UWEquipSlotWidget : public UUserWidget
 	
 		/* Methods */
 public:
-	void InitWidget(UWEquipmentManager* pEquipment, FEquipmentSlotInfo* pSlotInfo);
+	void InitWidget(UWEquipmentManager* pEquipmentManager, const FEquipmentSlotInfo* const& pSlotInfo);
 	void UpdateWidget();
 
 	void Show();
 	void Hide();
 
 	/* Get/Set */
-	FORCEINLINE FEquipmentSlotInfo* const& GetSlotInfo() const { return mpSlotInfo; }
-
+	FORCEINLINE const EItemEquipType& GetItemEquipType() const { return mItemEquipType; }
+	
 protected:
-	virtual void NativeConstruct() override;
+	virtual void NativePreConstruct() override;
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent) override;
 	virtual void NativeOnDragDetected(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent, UDragDropOperation*& outOperation) override;
@@ -55,28 +55,29 @@ protected:
 	UPROPERTY()
 	UBorder* mpOutline;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
-	FLinearColor mOnColor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
-	FLinearColor mOverColor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
-	FLinearColor mNoEquipColor;
-
 	UPROPERTY()
 	UBorder* mpBackground;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
-	UTexture2D* mpBackgroundImage;
 
 	UPROPERTY()
 	UImage* mpIcon;
 
-	FEquipmentSlotInfo* mpSlotInfo = nullptr;
-
-	UWEquipmentManager* mpEquipmentManager;
-
-private:
+	UPROPERTY(EditAnywhere, Category = "Configuration | EquipType")
 	EItemEquipType mItemEquipType;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration | Outline")
+	FLinearColor mOnColor;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration | Outline")
+	FLinearColor mOverColor;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration | Outline")
+	FLinearColor mFailColor;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration | Background")
+	UTexture2D* mpBackgroundImage;
+
+	const FEquipmentSlotInfo* mpSlotInfo = nullptr;	
+
+	UWEquipmentManager* mpEquipmentManager;	
+	
 };

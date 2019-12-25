@@ -28,7 +28,7 @@ void UWEquipmentManager::InitSlot()
 {
 	// ¿Â∫Ò ΩΩ∑‘ √ ±‚»≠.
 	UWEquipmentWidget* pEquipmentWidget = Cast<UWEquipmentWidget>(mpWidget);
-
+	
 	mWeaponSlot.pSlotWidget		= pEquipmentWidget->GetEquipSlotByItemEquipType(EItemEquipType::ItemEquip_Weapon);
 	mShieldSlot.pSlotWidget		= pEquipmentWidget->GetEquipSlotByItemEquipType(EItemEquipType::ItemEquip_Shield);
 	mHeadSlot.pSlotWidget		= pEquipmentWidget->GetEquipSlotByItemEquipType(EItemEquipType::ItemEquip_Head);
@@ -53,6 +53,59 @@ void UWEquipmentManager::Close()
 
 	// ¿Â∫Ò ¿Â¬¯ ∞¸∑√µ» ƒ¡≈Ÿ√˜&¿ß¡¨ ¿Œ≈Õ∑∫º«.
 	
+}
+
+bool UWEquipmentManager::EquipSlot(AWItemEquipment* pItemEquipment)
+{
+	return SetItemEquip(pItemEquipment);
+}
+
+bool UWEquipmentManager::UnequipSlot(AWItemEquipment* pItemEquipment)
+{
+	EItemEquipType itemEquipType = pItemEquipment->GetItemEquipType();
+
+	switch (itemEquipType)
+	{
+	case EItemEquipType::ItemEquip_Weapon:
+		return UnequipWeaponSlot();
+		break;
+	case EItemEquipType::ItemEquip_Shield:
+		return UnequipShieldSlot();
+		break;
+	case EItemEquipType::ItemEquip_Head:
+		return UnequipHeadSlot();
+		break;
+	case EItemEquipType::ItemEquip_Shoulder:
+		return UnequipShoulderSlot();
+		break;
+	case EItemEquipType::ItemEquip_Top:
+		return UnequipTopSlot();
+		break;
+	case EItemEquipType::ItemEquip_Bottom:
+		return UnequipBottomSlot();
+		break;
+	case EItemEquipType::ItemEquip_Glove:
+		return UnequipGloveSlot();
+		break;
+	case EItemEquipType::ItemEquip_Necklace:
+		return UnequipNecklaceSlot();
+		break;
+	case EItemEquipType::ItemEquip_Earring:
+		return UnequipEarringSlot();
+		break;
+	case EItemEquipType::ItemEquip_Ring:
+		return UnequipRingSlot();
+		break;
+	case EItemEquipType::ItemEquip_Bracelet:
+		return UnequipBraceletSlot();
+		break;
+	case EItemEquipType::ItemEquip_None:
+	case EItemEquipType::ItemEquip_Max:
+	default:
+		break;
+	}
+
+	return false;
 }
 
 bool UWEquipmentManager::SetItemEquip(AWItemEquipment* pItemEquipment)
@@ -113,70 +166,70 @@ bool UWEquipmentManager::EquipWeaponSlot(AWItemEquipment* pItemEquipment)
 bool UWEquipmentManager::EquipShieldSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipShieldSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipShieldSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipHeadSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipHeadSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipHeadSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipShoulderSlot(AWItemEquipment * pItemEquipment)
 {
 	UnequipShoulderSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipShoulderSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipTopSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipTopSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipTopSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipBottomSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipBottomSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipBottomSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipGloveSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipGloveSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipGloveSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipNecklaceSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipNecklaceSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipNecklaceSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipEarringSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipEarringSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipEarringSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipRingSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipRingSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipRingSlot()"));
 	return false;
 }
 
 bool UWEquipmentManager::EquipBraceletSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipBraceletSlot();
-
+	WLOG(Warning, TEXT("UWEquipmentManager::EquipBraceletSlot()"));
 	return false;
 }
 

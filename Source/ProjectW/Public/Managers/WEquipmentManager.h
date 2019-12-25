@@ -17,7 +17,7 @@ struct FEquipmentSlotInfo;
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class PROJECTW_API UWEquipmentManager : public UWContentManagerBase
 {
 	GENERATED_BODY()
@@ -29,6 +29,9 @@ public:
 	virtual void InitManager(UWContentWidgetBase* pWidget) override;
 	virtual void UpdateManager() override;
 	virtual void Close() override;
+
+	bool EquipSlot(AWItemEquipment* pItemEquipment);
+	bool UnequipSlot(AWItemEquipment* pItemEquipment);
 
 	/* Get/Set */
 	FORCEINLINE const FEquipmentSlotInfo& GetWeaponSlot()	const { return mWeaponSlot; }

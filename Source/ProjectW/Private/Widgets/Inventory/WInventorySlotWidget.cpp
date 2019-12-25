@@ -23,7 +23,7 @@ void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventoryManager, FI
 	{
 		mpInventoryManager = pInventoryManager;
 	}
-	WCHECK(nullptr != pSlotInfo);
+	
 	if (nullptr != pSlotInfo)
 	{
 		mpSlotInfo = pSlotInfo;
@@ -76,8 +76,8 @@ void UWInventorySlotWidget::Hide()
 
 void UWInventorySlotWidget::NativeConstruct()
 {
-	mOnColor = FLinearColor(1.0f, 1.0f, 1.0f);
-	mOverColor = FLinearColor(0.9f, 0.3f, 0.0f);
+	//mOnColor = FLinearColor(1.0f, 1.0f, 1.0f);
+	//mOverColor = FLinearColor(0.9f, 0.3f, 0.0f);
 
 	mpOutline->SetBrushColor(mOnColor);
 }

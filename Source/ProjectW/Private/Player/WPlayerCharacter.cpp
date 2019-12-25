@@ -106,6 +106,7 @@ void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputC
 	pPlayerInputComponent->BindAction(TEXT("ToggleMouseCursor"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleMouseCursor);
 	pPlayerInputComponent->BindAction(TEXT("ToggleInventory"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleInventory);
 	pPlayerInputComponent->BindAction(TEXT("ToggleStat"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleStat);
+	pPlayerInputComponent->BindAction(TEXT("ToggleEquip"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleEquip);
 
 	pPlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AWPlayerCharacter::MoveForward);
 	pPlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AWPlayerCharacter::MoveRight);
@@ -207,6 +208,21 @@ void AWPlayerCharacter::ToggleStat()
 		else
 		{
 			mpStatManager->Open();
+		}
+	}
+}
+
+void AWPlayerCharacter::ToggleEquip()
+{
+	if (nullptr != mpEquipmentManager)
+	{
+		if (mpEquipmentManager->GetIsOpen())
+		{
+			mpEquipmentManager->Close();
+		}
+		else
+		{
+			mpEquipmentManager->Open();
 		}
 	}
 }

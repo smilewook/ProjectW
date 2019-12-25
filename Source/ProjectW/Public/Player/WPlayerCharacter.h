@@ -53,6 +53,7 @@ private:
 	void ToggleMouseCursor();
 	void ToggleInventory();
 	void ToggleStat();
+	void ToggleEquip();
 
 	void MoveForward(float newAxisValue);
 	void MoveRight(float newAxisValue);

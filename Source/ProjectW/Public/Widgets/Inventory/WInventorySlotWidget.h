@@ -51,10 +51,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	class UBorder* mpOutline;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Outline")
 	FLinearColor mOnColor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Appearance")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Outline")
 	FLinearColor mOverColor;
 
 	UPROPERTY()

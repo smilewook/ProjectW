@@ -3,10 +3,9 @@
 #pragma once
 
 
-#include "ProjectW.h"
-#include "ProjectWEnums.h"
-#include "ProjectWStructure.h"
+#include "CoreMinimal.h"
 #include "Widgets/WContentWidgetBase.h"
+#include "ProjectWEnums.h"
 #include "WEquipmentWidget.generated.h"
 
 
@@ -27,15 +26,14 @@ class PROJECTW_API UWEquipmentWidget : public UWContentWidgetBase
 	/* Methods */
 public:
 	virtual void InitWidget(UWMainWidget* pMainWidget, UWContentManagerBase* pContentManager) override;
-
+	
 	/* Get/Set */
 	FORCEINLINE UWEquipSlotWidget* const& GetEquipSlotByItemEquipType(EItemEquipType itemEquipType) const;
 
 protected:
 	virtual void NativeConstruct() override;
 
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent) override;
-	virtual void NativeOnDragDetected(const FGeometry& inGeometry, const FPointerEvent& inMouseEvent, UDragDropOperation*& outOperation) override;
+	virtual bool NativeOnDrop(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation) override;
 
 private:
 	UFUNCTION()
@@ -50,9 +48,6 @@ protected:
 	
 	UPROPERTY()
 	UButton* mpCloseButton;
-	
-	UPROPERTY(EditAnywhere, Category = "Configuration")
-	TSubclassOf <UWEquipSlotWidget> mSlotWidgetClass;
 
 	UPROPERTY()
 	UWEquipSlotWidget* mpWeaponSlot;
