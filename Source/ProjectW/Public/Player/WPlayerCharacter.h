@@ -8,10 +8,9 @@
 #include "WPlayerCharacter.generated.h"
 
 
+class AWItemEquipment;
 class AWPickupActor;
 class AWPlayerController;
-class AWWeapon;
-
 class UWEquipmentManager;
 class UWInventoryManager;
 class UWStatManager;
@@ -32,8 +31,12 @@ public:
 
 	void DelTargetActor();
 
+	// 캐릭터 장비
+	void SetWeapon(AWItemEquipment* pNewWeapon);
+	void SetSecondWeapon(AWItemEquipment* pNewWeapon);
+
 	// 캐릭터 속성
-	bool MotifyStatAttribute(EStatAttributeType statType, float value);
+	bool ModifyStatAttribute(EStatAttributeType statType, float value);
 	
 	/* Get/Set */
 	FORCEINLINE UWMainWidget*		const& GetMainWidget() const { return mpMainWidget; }
@@ -41,7 +44,7 @@ public:
 	FORCEINLINE UWStatManager*		const& GetStatManager() const { return mpStatManager; }
 	FORCEINLINE UWEquipmentManager* const& GetEquipmentManager() const { return mpEquipmentManager; }
 	
-	FORCEINLINE AWPickupActor* const& GetTargetActor() const { return mpTargetActor; }
+	FORCEINLINE AWPickupActor*		const& GetTargetActor() const { return mpTargetActor; }
 
 	FORCEINLINE void SetTargetActor(AWPickupActor* pTargetActor) { mpTargetActor = pTargetActor; }
 
@@ -61,25 +64,31 @@ private:
 	void Turn(float newAxisValue);
 
 	/* Properties */
-public:	
-
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* mpWeapon;
-
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AWWeapon* mpCurrentWeapon;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	// 컴포넌트
+	UPROPERTY(VisibleAnywhere, Category = "Components | Camera")
 	USpringArmComponent* mpSpringArm;
 
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, Category = "Components | Camera")
 	UCameraComponent* mpCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components | Equip")
+	AWItemEquipment* mpCurrentWeapon;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components | Equip")
+	USkeletalMeshComponent* mpWeaponMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components | Equip")
+	AWItemEquipment* mpCurrentSecondWeapon;
 	
-/*private:*/
+	UPROPERTY(VisibleAnywhere, Category = "Components | Equip")
+	USkeletalMeshComponent* mpSecondWeaponMesh;
+	
+	// 컨트롤
 	UPROPERTY()
 	AWPlayerController* mpPlayerController;
 
+	// 위젯
 	UPROPERTY()
 	UWMainWidget* mpMainWidget;
 
@@ -92,7 +101,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "ContentsManager")
 	UWEquipmentManager* mpEquipmentManager;
 
+	// 인터렉션
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	AWPickupActor* mpTargetActor;
+
+	
 
 };

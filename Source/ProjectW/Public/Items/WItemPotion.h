@@ -19,11 +19,12 @@ class PROJECTW_API AWItemPotion : public AWItemBase
 public:
 	AWItemPotion();
 
-	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo);
+	virtual void InitOwner(AActor* pOwner) override;
+	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo) override;
 
 	/* Properties */
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Configuration")
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* mpStaticMesh;
 
 };

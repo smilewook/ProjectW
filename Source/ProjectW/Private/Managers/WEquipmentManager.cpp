@@ -55,57 +55,10 @@ void UWEquipmentManager::Close()
 	
 }
 
+/* 아이템 장비 장착 */
 bool UWEquipmentManager::EquipSlot(AWItemEquipment* pItemEquipment)
 {
 	return SetItemEquip(pItemEquipment);
-}
-
-bool UWEquipmentManager::UnequipSlot(AWItemEquipment* pItemEquipment)
-{
-	EItemEquipType itemEquipType = pItemEquipment->GetItemEquipType();
-
-	switch (itemEquipType)
-	{
-	case EItemEquipType::ItemEquip_Weapon:
-		return UnequipWeaponSlot();
-		break;
-	case EItemEquipType::ItemEquip_Shield:
-		return UnequipShieldSlot();
-		break;
-	case EItemEquipType::ItemEquip_Head:
-		return UnequipHeadSlot();
-		break;
-	case EItemEquipType::ItemEquip_Shoulder:
-		return UnequipShoulderSlot();
-		break;
-	case EItemEquipType::ItemEquip_Top:
-		return UnequipTopSlot();
-		break;
-	case EItemEquipType::ItemEquip_Bottom:
-		return UnequipBottomSlot();
-		break;
-	case EItemEquipType::ItemEquip_Glove:
-		return UnequipGloveSlot();
-		break;
-	case EItemEquipType::ItemEquip_Necklace:
-		return UnequipNecklaceSlot();
-		break;
-	case EItemEquipType::ItemEquip_Earring:
-		return UnequipEarringSlot();
-		break;
-	case EItemEquipType::ItemEquip_Ring:
-		return UnequipRingSlot();
-		break;
-	case EItemEquipType::ItemEquip_Bracelet:
-		return UnequipBraceletSlot();
-		break;
-	case EItemEquipType::ItemEquip_None:
-	case EItemEquipType::ItemEquip_Max:
-	default:
-		break;
-	}
-
-	return false;
 }
 
 bool UWEquipmentManager::SetItemEquip(AWItemEquipment* pItemEquipment)
@@ -158,78 +111,199 @@ bool UWEquipmentManager::SetItemEquip(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipWeaponSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipWeaponSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipWeaponSlot()"));
-	return false;
+	UnequipWeaponSlot();
+
+	mWeaponSlot.pItemClass = pItemEquipment;
+	mWeaponSlot.pSlotWidget->Show();
+
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	pPlayer->SetWeapon(pItemEquipment);
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipShieldSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipShieldSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipShieldSlot()"));
-	return false;
+	UnequipShieldSlot();
+
+	mShieldSlot.pItemClass = pItemEquipment;
+	mShieldSlot.pSlotWidget->Show();
+
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	pPlayer->SetSecondWeapon(pItemEquipment);
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipHeadSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipHeadSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipHeadSlot()"));
-	return false;
+	UnequipHeadSlot();
+	
+	mHeadSlot.pItemClass = pItemEquipment;
+	mHeadSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipShoulderSlot(AWItemEquipment * pItemEquipment)
 {
-	UnequipShoulderSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipShoulderSlot()"));
-	return false;
+	UnequipShoulderSlot();
+	
+	mShoulderSlot.pItemClass = pItemEquipment;
+	mShoulderSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipTopSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipTopSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipTopSlot()"));
-	return false;
+	UnequipTopSlot();
+	
+	mTopSlot.pItemClass = pItemEquipment;
+	mTopSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipBottomSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipBottomSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipBottomSlot()"));
-	return false;
+	UnequipBottomSlot();
+	
+	mBottomSlot.pItemClass = pItemEquipment;
+	mBottomSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipGloveSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipGloveSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipGloveSlot()"));
-	return false;
+	UnequipGloveSlot();
+	
+	mGloveSlot.pItemClass = pItemEquipment;
+	mGloveSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipNecklaceSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipNecklaceSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipNecklaceSlot()"));
-	return false;
+	UnequipNecklaceSlot();
+	
+	mNecklaceSlot.pItemClass = pItemEquipment;
+	mNecklaceSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipEarringSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipEarringSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipEarringSlot()"));
-	return false;
+	UnequipEarringSlot();
+	
+	mEarringSlot.pItemClass = pItemEquipment;
+	mEarringSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipRingSlot(AWItemEquipment* pItemEquipment)
 {
-	UnequipRingSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipRingSlot()"));
-	return false;
+	UnequipRingSlot();
+	
+	mRingSlot.pItemClass = pItemEquipment;
+	mRingSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
 }
 
 bool UWEquipmentManager::EquipBraceletSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipBraceletSlot();
 	WLOG(Warning, TEXT("UWEquipmentManager::EquipBraceletSlot()"));
+	
+	mBraceletSlot.pItemClass = pItemEquipment;
+	mBraceletSlot.pSlotWidget->Show();
+
+	UpdatePlayerStats(pItemEquipment, true);
+
+	return true;
+}
+
+/* 아이템 장비 탈착 */
+bool UWEquipmentManager::UnequipSlot(AWItemEquipment* pItemEquipment)
+{
+	EItemEquipType itemEquipType = pItemEquipment->GetItemEquipType();
+
+	switch (itemEquipType)
+	{
+	case EItemEquipType::ItemEquip_Weapon:
+		return UnequipWeaponSlot();
+		break;
+	case EItemEquipType::ItemEquip_Shield:
+		return UnequipShieldSlot();
+		break;
+	case EItemEquipType::ItemEquip_Head:
+		return UnequipHeadSlot();
+		break;
+	case EItemEquipType::ItemEquip_Shoulder:
+		return UnequipShoulderSlot();
+		break;
+	case EItemEquipType::ItemEquip_Top:
+		return UnequipTopSlot();
+		break;
+	case EItemEquipType::ItemEquip_Bottom:
+		return UnequipBottomSlot();
+		break;
+	case EItemEquipType::ItemEquip_Glove:
+		return UnequipGloveSlot();
+		break;
+	case EItemEquipType::ItemEquip_Necklace:
+		return UnequipNecklaceSlot();
+		break;
+	case EItemEquipType::ItemEquip_Earring:
+		return UnequipEarringSlot();
+		break;
+	case EItemEquipType::ItemEquip_Ring:
+		return UnequipRingSlot();
+		break;
+	case EItemEquipType::ItemEquip_Bracelet:
+		return UnequipBraceletSlot();
+		break;
+	case EItemEquipType::ItemEquip_None:
+	case EItemEquipType::ItemEquip_Max:
+	default:
+		break;
+	}
+
 	return false;
 }
 
@@ -243,10 +317,9 @@ bool UWEquipmentManager::UnequipWeaponSlot()
 			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mWeaponSlot.pItemClass);
 			if (true == bSuccess)
 			{
-				//_UpdatePlayerStats(m_WeaponSlot.pItem, false);
-				//FDetachmentTransformRules Param(EDetachmentRule::KeepWorld, false);
-				//m_WeaponSlot.pItem->DetachFromActor(Param);
-				//m_WeaponSlot.pItem->SetActorHiddenInGame(true);
+				pPlayer->SetWeapon(nullptr);
+				UpdatePlayerStats(mWeaponSlot.pItemClass, false);				
+
 				mWeaponSlot.pItemClass = nullptr;
 				mWeaponSlot.pSlotWidget->Hide();
 				return true;
@@ -258,50 +331,225 @@ bool UWEquipmentManager::UnequipWeaponSlot()
 
 bool UWEquipmentManager::UnequipShieldSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mShieldSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mShieldSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				pPlayer->SetSecondWeapon(nullptr);
+				UpdatePlayerStats(mShieldSlot.pItemClass, false);
+
+				mShieldSlot.pItemClass = nullptr;
+				mShieldSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipHeadSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mHeadSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mHeadSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mHeadSlot.pItemClass, false);
+
+				mHeadSlot.pItemClass = nullptr;
+				mHeadSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipShoulderSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mShoulderSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mShoulderSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mShoulderSlot.pItemClass, false);
+
+				mShoulderSlot.pItemClass = nullptr;
+				mShoulderSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipTopSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mTopSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mTopSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mTopSlot.pItemClass, false);
+
+				mTopSlot.pItemClass = nullptr;
+				mTopSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipBottomSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mBottomSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mBottomSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mBottomSlot.pItemClass, false);
+
+				mBottomSlot.pItemClass = nullptr;
+				mBottomSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipGloveSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mGloveSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mGloveSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mGloveSlot.pItemClass, false);
+
+				mGloveSlot.pItemClass = nullptr;
+				mGloveSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipNecklaceSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mNecklaceSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mNecklaceSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mNecklaceSlot.pItemClass, false);
+
+				mNecklaceSlot.pItemClass = nullptr;
+				mNecklaceSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipEarringSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mEarringSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mEarringSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mEarringSlot.pItemClass, false);
+
+				mEarringSlot.pItemClass = nullptr;
+				mEarringSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipRingSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mRingSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mRingSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mRingSlot.pItemClass, false);
+
+				mRingSlot.pItemClass = nullptr;
+				mRingSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
 bool UWEquipmentManager::UnequipBraceletSlot()
 {
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	if (::IsValid(pPlayer))
+	{
+		if (nullptr != mBraceletSlot.pItemClass)
+		{
+			bool bSuccess = pPlayer->GetInventoryManager()->AddItem(mBraceletSlot.pItemClass);
+			if (true == bSuccess)
+			{
+				UpdatePlayerStats(mBraceletSlot.pItemClass, false);
+
+				mBraceletSlot.pItemClass = nullptr;
+				mBraceletSlot.pSlotWidget->Hide();
+				return true;
+			}
+		}
+	}
 	return false;
+}
+
+void UWEquipmentManager::UpdatePlayerStats(AWItemEquipment* pItemEquipment, bool isAdd)
+{
+	// 무기 장착에 따른 스탯 변경 필요.
+	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(GetOwner());
+	FItemInfo itemInfo = pItemEquipment->GetItemInfo();
+
+	int32 valueRate = isAdd ? 1 : -1;
+
+	for (auto itemStat : itemInfo.ItemStats)
+	{
+		pPlayer->ModifyStatAttribute(itemStat.Key, itemStat.Value * valueRate);
+	}
 }

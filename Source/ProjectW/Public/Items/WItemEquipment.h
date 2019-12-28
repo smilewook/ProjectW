@@ -5,11 +5,16 @@
 #include "ProjectW.h"
 #include "ProjectWEnums.h"
 #include "ProjectWStructure.h"
-#include "Items//WItemBase.h"
+#include "Items/WItemBase.h"
 #include "WItemEquipment.generated.h"
 
 
 struct FInventorySlotInfo;
+
+class UArrowComponent;
+class USkeletalMeshComponent;
+class USkeletalMesh;
+class UCapsuleComponent;
 
 
 /**
@@ -24,16 +29,36 @@ class PROJECTW_API AWItemEquipment : public AWItemBase
 public:
 	AWItemEquipment();
 
-	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo);
+	virtual void InitOwner(AActor* pOwner) override;
+	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo) override;
 
 	/* Get/Set */
-	FORCEINLINE const EItemEquipType& GetItemEquipType() const { return mItemEquipType; }
+	FORCEINLINE USkeletalMesh* const& GetWeaponMesh() const { return mpItemMesh; }
 	FORCEINLINE const FName& GetSocketName() const { return mSocketName; }
+	FORCEINLINE const EItemEquipType& GetItemEquipType() const { return mItemEquipType; }
 
 	/* Properties */
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Configuration")
-	UStaticMeshComponent* mpStaticMesh;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UArrowComponent* mpArrow;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCapsuleComponent* mpCollision;
+
+// 	UPROPERTY(VisibleAnywhere, Category = "Components")
+// 	USkeletalMeshComponent* mpItemMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	USkeletalMesh* mpItemMesh;
+
+// 	UPROPERTY(VisibleAnywhere, Category = "Components")
+// 	UArrowComponent* mpArrow;
+// 
+// 	UPROPERTY(VisibleAnywhere, Category = "Components")
+// 	UCapsuleComponent* mpCollision;
+// 
+// 	UPROPERTY(VisibleAnywhere, Category = "Components")
+// 	UStaticMeshComponent* mpItemMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Configuration | Equip")
 	FName mSocketName;

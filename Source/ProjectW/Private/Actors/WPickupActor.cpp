@@ -116,8 +116,11 @@ void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
 
 void AWPickupActor::UnInteract()
 {
-	GetInteractionPlayer()->DelTargetActor();
-	mpInteractionPlayer = nullptr;
+	if (nullptr != mpInteractionPlayer)
+	{
+		GetInteractionPlayer()->DelTargetActor();
+		mpInteractionPlayer = nullptr;
+	}
 }
 
 void AWPickupActor::BeginPlay()

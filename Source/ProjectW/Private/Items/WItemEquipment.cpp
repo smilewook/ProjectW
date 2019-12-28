@@ -5,11 +5,24 @@
 #include "Managers/WEquipmentManager.h"
 #include "Player/WPlayerCharacter.h"
 
+#include <Components/ArrowComponent.h>
+#include <Components/SphereComponent.h>
+#include <Components/StaticMeshComponent.h>
+
 
 AWItemEquipment::AWItemEquipment()
 {
-	mpStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	mpStaticMesh->SetupAttachment(RootComponent);
+	mpArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
+	RootComponent = mpArrow;
+
+	mpCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
+	mpCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mpCollision->SetupAttachment(RootComponent);
+}
+
+void AWItemEquipment::InitOwner(AActor* pOwner)
+{
+	AWItemBase::InitOwner(pOwner);
 }
 
 bool AWItemEquipment::OnUse(FInventorySlotInfo* const pSlotInfo)

@@ -11,6 +11,11 @@ AWItemPotion::AWItemPotion()
 	mpStaticMesh->SetupAttachment(RootComponent);
 }
 
+void AWItemPotion::InitOwner(AActor* pOwner)
+{
+	AWItemBase::InitOwner(pOwner);
+}
+
 bool AWItemPotion::OnUse(FInventorySlotInfo* const pSlotInfo)
 {
 	// 포션 아이템 사용시.
@@ -20,7 +25,7 @@ bool AWItemPotion::OnUse(FInventorySlotInfo* const pSlotInfo)
 		FItemInfo itemInfo = GetItemInfo();
 		for (auto itemStat : itemInfo.ItemStats)
 		{
-			bSuccess = mpPlayer->MotifyStatAttribute(itemStat.Key, itemStat.Value);
+			bSuccess = mpPlayer->ModifyStatAttribute(itemStat.Key, itemStat.Value);
 
 			if (true == bSuccess)
 			{

@@ -24,7 +24,7 @@ class PROJECTW_API AWItemBase : public AActor
 public:
 	AWItemBase();
 
-	virtual void InitOwner(AActor* _pOwner);
+	virtual void InitOwner(AActor* pOwner);
 
 	virtual bool OnUse(FInventorySlotInfo* const pSlotInfo) { return false; }
 

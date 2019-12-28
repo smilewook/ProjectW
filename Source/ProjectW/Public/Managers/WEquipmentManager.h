@@ -79,6 +79,8 @@ private:
 	bool UnequipRingSlot();
 	bool UnequipBraceletSlot();
 
+	void UpdatePlayerStats(AWItemEquipment* pItemEquipment, bool isAdd);
+
 	/* Properties */
 public:
 

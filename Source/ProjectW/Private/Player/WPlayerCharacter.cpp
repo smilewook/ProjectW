@@ -4,6 +4,7 @@
 #include "WPlayerCharacter.h"
 #include "WPlayerController.h"
 #include "Actors/WPickupActor.h"
+#include "Items/WItemEquipment.h"
 #include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
 #include "Managers/WStatManager.h"
@@ -66,6 +67,73 @@ AWPlayerCharacter::AWPlayerCharacter()
 	mpStatManager = CreateDefaultSubobject<UWStatManager>(TEXT("Stat"));
 	mpEquipmentManager = CreateDefaultSubobject<UWEquipmentManager>(TEXT("Equipment"));
 	
+	// 장착 장비.
+ 	mpWeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+ 	mpWeaponMesh->SetupAttachment(GetMesh());
+	mpSecondWeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SecondWeaponMesh"));
+	mpSecondWeaponMesh->SetupAttachment(GetMesh());
+}
+
+void AWPlayerCharacter::DelTargetActor()
+{
+	if (nullptr != mpTargetActor)
+	{
+		mpTargetActor = nullptr;
+	}
+}
+
+void AWPlayerCharacter::SetWeapon(AWItemEquipment* pNewWeapon)
+{
+	if (nullptr != mpCurrentWeapon)
+	{
+		mpWeaponMesh->SetSkeletalMesh(nullptr);
+		mpCurrentWeapon->Destroy();
+		mpCurrentWeapon = nullptr;
+	}
+
+	if (nullptr != pNewWeapon)
+	{
+		mpCurrentWeapon = pNewWeapon;
+
+		mpWeaponMesh->SetSkeletalMesh(mpCurrentWeapon->GetWeaponMesh());
+		mpWeaponMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, mpCurrentWeapon->GetSocketName());
+	}
+}
+
+void AWPlayerCharacter::SetSecondWeapon(AWItemEquipment* pNewWeapon)
+{
+	if (nullptr != mpCurrentSecondWeapon)
+	{
+		mpSecondWeaponMesh->SetSkeletalMesh(nullptr);
+		mpCurrentSecondWeapon->Destroy();
+		mpCurrentSecondWeapon = nullptr;
+	}
+
+	if (nullptr != pNewWeapon)
+	{
+		mpCurrentSecondWeapon = pNewWeapon;
+
+		mpSecondWeaponMesh->SetSkeletalMesh(mpCurrentSecondWeapon->GetWeaponMesh());
+		mpSecondWeaponMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, mpCurrentSecondWeapon->GetSocketName());
+	}
+}
+
+bool AWPlayerCharacter::ModifyStatAttribute(EStatAttributeType statType, float value)
+{
+	return mpStatManager->ModifyStatAttribute(statType, value);
+}
+
+void AWPlayerCharacter::Interact()
+{
+	if (nullptr != GetTargetActor())
+	{
+		WLOG(Warning, TEXT("TargetActor is real!"));
+		mpTargetActor->OnPickedUp(this);
+	}
+	else
+	{
+		WLOG(Warning, TEXT("TargetActor is null!"));
+	}
 }
 
 void AWPlayerCharacter::BeginPlay()
@@ -87,14 +155,13 @@ void AWPlayerCharacter::BeginPlay()
 	}
 	else
 	{
-		WLOG_SCREEN(TEXT("Create MainWidget Failed."));
+		WLOG(Warning, TEXT("Create MainWidget Failed."));
 	}
 }
 
 void AWPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
@@ -112,61 +179,6 @@ void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputC
 	pPlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AWPlayerCharacter::MoveRight);
 	pPlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AWPlayerCharacter::LookUp);
 	pPlayerInputComponent->BindAxis(TEXT("Turn"), this, &AWPlayerCharacter::Turn);
-}
-
-void AWPlayerCharacter::DelTargetActor()
-{
-	mpTargetActor = nullptr;
-}
-
-bool AWPlayerCharacter::MotifyStatAttribute(EStatAttributeType statType, float value)
-{
-	return mpStatManager->ModifyStatAttribute(statType, value);
-}
-
-void AWPlayerCharacter::Interact()
-{
-	if (nullptr != GetTargetActor())
-	{
-		WLOG(Warning, TEXT("TargetActor is real!"));
-		mpTargetActor->OnPickedUp(this);
-	}
-	else
-	{
-		WLOG(Warning, TEXT("TargetActor is null!"));
-	}
-	FHitResult hitResult;
-	FVector direction = mpCamera->GetForwardVector();
-	FVector startLoc = mpCamera->GetComponentLocation();
-	FVector endLoc = startLoc + (direction * 1000.0f);
-
-// 	FCollisionObjectQueryParams CollisionObjectQueryParams;
-// 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_EngineTraceChannel2);
-// 	FCollisionQueryParams CollisionQueryParams(FName(""), false, GetOwner()
-	
-// 	if (GetWorld()->LineTraceSingleByChannel(hitResult, startLoc, endLoc, ECollisionChannel::ECC_Visibility))
-// 	{
-// 		// 상호작용이 가능한 액터일 경우.
-// 		if (IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(Result.GetActor()))
-// 		{
-// 			pInteract->GetInteractionUser() ? pInteract->UnInteract() : pInteract->OnInteract(m_pPlayer);
-// 			return;
-// 		}
-// 	}
-// 
-// 	if (GetTarget())
-// 	{
-// 		IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(m_pPlayer->GetTarget());
-// 		pInteract->UnInteract();
-// 		return;
-// 	}
-// 	m_pPickupActor = pPickupActor;
-// 
-// 	m_pPickupActor->SetHasPickupCommand(true);
-// 	if (m_pPickupActor->GetDistanceTo(GetPawn()) <= 300.f)
-// 	{
-// 		m_pPickupActor->OnPickedUp(GetPawn());
-// 	}
 }
 
 void AWPlayerCharacter::ToggleMouseCursor()
@@ -230,13 +242,11 @@ void AWPlayerCharacter::ToggleEquip()
 void AWPlayerCharacter::MoveForward(float newAxisValue)
 {
 	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), newAxisValue);
-	//AddMovementInput(GetActorForwardVector(), newAxisValue);
 }
 
 void AWPlayerCharacter::MoveRight(float newAxisValue)
 {
 	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), newAxisValue);
-	//AddMovementInput(GetActorRightVector(), newAxisValue);
 }
 
 void AWPlayerCharacter::LookUp(float newAxisValue)
