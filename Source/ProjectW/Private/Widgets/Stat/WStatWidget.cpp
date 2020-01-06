@@ -30,7 +30,7 @@ void UWStatWidget::CreateStatAttribute()
 			
 			pStatLabelWidget->InitWidget(stat.Key, mpStatManager);
 			pStatLabelWidget->UpdateWidget(stat.Value);
-			mpStatManager->SetStatAttribute(pStatLabelWidget);
+			mpStatManager->AddStatAttribute(pStatLabelWidget);
 
 			if (EStatAttributeType::StatAttribute_None == stat.Key || EStatAttributeType::StatAttribute_Special == stat.Key)
 			{

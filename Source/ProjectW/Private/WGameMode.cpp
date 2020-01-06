@@ -46,5 +46,5 @@ void AWGameMode::AddScore(AWPlayerController* pScoredPlayer)
 		}
 	}
 
-	mpGameState->AddGameScore();
+	//mpGameState->AddGameScore();
 }

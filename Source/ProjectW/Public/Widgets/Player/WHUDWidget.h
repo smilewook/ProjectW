@@ -8,9 +8,8 @@
 
 
 class AWPlayerState;
-class UWCharacterStatComponent;
 class UWMainWidget;
-
+class UWStatManager;
 class UProgressBar;
 class UTextBlock;
 
@@ -26,37 +25,34 @@ class PROJECTW_API UWHUDWidget : public UUserWidget
 	/* Method */
 public:
 	void InitWidget(UWMainWidget* pMainWidget);
-	void BindCharacterStat(UWCharacterStatComponent* pCharacterStat);
+	void BindCharacterStat(UWStatManager* pStatManager);
 	void BindPlayerState(AWPlayerState* pPlayerState);
 
 protected:
-	virtual void NativeConstruct() override;
-	void UpdateCharacterStat();
+	void UpdatePlayerHP();
+	void UpdatePlayerMP();
 	void UpdatePlayerState();
 
 	/* Properties */
-private:
-	TWeakObjectPtr<UWCharacterStatComponent> mCurrentCharacterStat;
-	TWeakObjectPtr<AWPlayerState> mCurrentPlayerState;
-
+private:	
 	UPROPERTY()
 	UWMainWidget* mpMainWidget;
 
 	UPROPERTY()
-	UProgressBar* mpHPBar;
+	UWStatManager* mpStatManager;
 
 	UPROPERTY()
-	UProgressBar* mpExpBar;
+	AWPlayerState* mpPlayerState;
 
 	UPROPERTY()
-	UTextBlock* mpPlayerName;
+	UProgressBar* mpHPProgressBar;
 
 	UPROPERTY()
-	UTextBlock* mpPlayerLevel;
+	UProgressBar* mpMPProgressBar;
 
 	UPROPERTY()
-	UTextBlock* mpCurrentScore;
+	UTextBlock* mpNameText;
 
 	UPROPERTY()
-	UTextBlock* mpHighScore;
+	UTextBlock* mpLevelText;
 };

@@ -45,20 +45,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCapsuleComponent* mpCollision;
 
-// 	UPROPERTY(VisibleAnywhere, Category = "Components")
-// 	USkeletalMeshComponent* mpItemMesh;
-
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USkeletalMesh* mpItemMesh;
-
-// 	UPROPERTY(VisibleAnywhere, Category = "Components")
-// 	UArrowComponent* mpArrow;
-// 
-// 	UPROPERTY(VisibleAnywhere, Category = "Components")
-// 	UCapsuleComponent* mpCollision;
-// 
-// 	UPROPERTY(VisibleAnywhere, Category = "Components")
-// 	UStaticMeshComponent* mpItemMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Configuration | Equip")
 	FName mSocketName;

@@ -44,7 +44,7 @@ void UWEquipmentManager::InitSlot()
 
 void UWEquipmentManager::UpdateManager()
 {
-	// something like that
+	// 기본 스탯 설정 이후의 장비 스탯들 설정할때 필요.
 }
 
 void UWEquipmentManager::Close()
@@ -111,7 +111,7 @@ bool UWEquipmentManager::SetItemEquip(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipWeaponSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipWeaponSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipWeaponSlot()"));
 	UnequipWeaponSlot();
 
 	mWeaponSlot.pItemClass = pItemEquipment;
@@ -127,7 +127,7 @@ bool UWEquipmentManager::EquipWeaponSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipShieldSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipShieldSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipShieldSlot()"));
 	UnequipShieldSlot();
 
 	mShieldSlot.pItemClass = pItemEquipment;
@@ -143,7 +143,7 @@ bool UWEquipmentManager::EquipShieldSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipHeadSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipHeadSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipHeadSlot()"));
 	UnequipHeadSlot();
 	
 	mHeadSlot.pItemClass = pItemEquipment;
@@ -156,7 +156,7 @@ bool UWEquipmentManager::EquipHeadSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipShoulderSlot(AWItemEquipment * pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipShoulderSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipShoulderSlot()"));
 	UnequipShoulderSlot();
 	
 	mShoulderSlot.pItemClass = pItemEquipment;
@@ -169,7 +169,7 @@ bool UWEquipmentManager::EquipShoulderSlot(AWItemEquipment * pItemEquipment)
 
 bool UWEquipmentManager::EquipTopSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipTopSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipTopSlot()"));
 	UnequipTopSlot();
 	
 	mTopSlot.pItemClass = pItemEquipment;
@@ -182,7 +182,7 @@ bool UWEquipmentManager::EquipTopSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipBottomSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipBottomSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipBottomSlot()"));
 	UnequipBottomSlot();
 	
 	mBottomSlot.pItemClass = pItemEquipment;
@@ -195,7 +195,7 @@ bool UWEquipmentManager::EquipBottomSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipGloveSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipGloveSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipGloveSlot()"));
 	UnequipGloveSlot();
 	
 	mGloveSlot.pItemClass = pItemEquipment;
@@ -208,7 +208,7 @@ bool UWEquipmentManager::EquipGloveSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipNecklaceSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipNecklaceSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipNecklaceSlot()"));
 	UnequipNecklaceSlot();
 	
 	mNecklaceSlot.pItemClass = pItemEquipment;
@@ -221,7 +221,7 @@ bool UWEquipmentManager::EquipNecklaceSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipEarringSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipEarringSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipEarringSlot()"));
 	UnequipEarringSlot();
 	
 	mEarringSlot.pItemClass = pItemEquipment;
@@ -234,7 +234,7 @@ bool UWEquipmentManager::EquipEarringSlot(AWItemEquipment* pItemEquipment)
 
 bool UWEquipmentManager::EquipRingSlot(AWItemEquipment* pItemEquipment)
 {
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipRingSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipRingSlot()"));
 	UnequipRingSlot();
 	
 	mRingSlot.pItemClass = pItemEquipment;
@@ -248,7 +248,7 @@ bool UWEquipmentManager::EquipRingSlot(AWItemEquipment* pItemEquipment)
 bool UWEquipmentManager::EquipBraceletSlot(AWItemEquipment* pItemEquipment)
 {
 	UnequipBraceletSlot();
-	WLOG(Warning, TEXT("UWEquipmentManager::EquipBraceletSlot()"));
+	//WLOG(Warning, TEXT("UWEquipmentManager::EquipBraceletSlot()"));
 	
 	mBraceletSlot.pItemClass = pItemEquipment;
 	mBraceletSlot.pSlotWidget->Show();
@@ -550,6 +550,8 @@ void UWEquipmentManager::UpdatePlayerStats(AWItemEquipment* pItemEquipment, bool
 
 	for (auto itemStat : itemInfo.ItemStats)
 	{
-		pPlayer->ModifyStatAttribute(itemStat.Key, itemStat.Value * valueRate);
+		// 장비 장착시 max만 채울것인가? current도 채울것인가?
+		pPlayer->ModifyMaxStatAttribute(itemStat.Key, itemStat.Value * valueRate);
+		//pPlayer->ModifyCurrentStatAttribute(itemStat.Key, itemStat.Value * valueRate);
 	}
 }

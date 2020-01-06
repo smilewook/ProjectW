@@ -11,27 +11,19 @@ AWPlayerState::AWPlayerState()
 	mCharacterLevel = 1;
 	mGameScore = 0;
 	mGameHighScore = 0;
-	mExp = 0;
+	mCurrentExp = 0;
 	SaveSlotName = TEXT("Player1");
-}
-
-int32 AWPlayerState::GetGameScore() const
-{
-	return mGameScore;
-}
-
-int32 AWPlayerState::GetGameHighScore() const
-{
-	return mGameHighScore;
-}
-
-int32 AWPlayerState::GetCharacterLevel() const
-{
-	return mCharacterLevel;
 }
 
 void AWPlayerState::InitPlayerData()
 {
+	// 로딩 작업 이전까진 리셋.
+	SetPlayerName(TEXT("SmileWook"));
+	SetCharacterLevel(mCharacterLevel);
+
+	OnPlayerStateChanged.Broadcast();
+	return;
+
 	auto saveGame = Cast<UWSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
 	if (nullptr == saveGame)
 	{
@@ -42,7 +34,9 @@ void AWPlayerState::InitPlayerData()
  	SetCharacterLevel(saveGame->Level);
  	mGameScore = 0;
  	mGameHighScore = saveGame->HighScore;
- 	mExp = saveGame->Exp;
+	mCurrentExp = saveGame->Exp;
+
+	OnPlayerStateChanged.Broadcast();
  	SavePlayerData();
 }
 
@@ -51,7 +45,7 @@ void AWPlayerState::SavePlayerData()
 	UWSaveGame* pNewSaveData = NewObject<UWSaveGame>();
 	pNewSaveData->PlayerName = GetPlayerName();
 	pNewSaveData->Level = mCharacterLevel;
-	pNewSaveData->Exp = mExp;
+	pNewSaveData->Exp = mCurrentExp;
 	pNewSaveData->HighScore = mGameHighScore;
 
 	if (!UGameplayStatics::SaveGameToSlot(pNewSaveData, SaveSlotName, 0))
@@ -60,14 +54,14 @@ void AWPlayerState::SavePlayerData()
 	}
 }
 
-float AWPlayerState::GetExpRatio() const
+int32 AWPlayerState::GetExpRatio() const
 {
-	if (mCurrentStatData->NextExp <= KINDA_SMALL_NUMBER)
-		return 0.0f;
+	if (nullptr == mCurrentStatData || mCurrentStatData->NextExp <= KINDA_SMALL_NUMBER)
+		return 0;
 
-	float Result = (float)mExp / (float)mCurrentStatData->NextExp;
-	WLOG(Warning, TEXT("Ratio : %f, Current : %d, Next : %d"), Result, mExp, mCurrentStatData->NextExp);
-	return Result;
+	int32 result = (float)mCurrentExp / (float)mMaxExp * 100;
+	WLOG(Warning, TEXT("AWPlayerState::GetExpRatio() : %d, Current : %d, Next : %d"), result, mCurrentExp, mMaxExp);
+	return result;
 }
 
 bool AWPlayerState::AddExp(int32 inExp)
@@ -76,13 +70,14 @@ bool AWPlayerState::AddExp(int32 inExp)
 		return false;
 
 	bool didLevelUp = false;
-	mExp = mExp + inExp;
-	if (mExp >= mCurrentStatData->NextExp)
+	mCurrentExp = mCurrentExp + inExp;
+	if (mCurrentExp >= mMaxExp)
 	{
-		mExp -= mCurrentStatData->NextExp;
+		mCurrentExp -= mMaxExp;
 		SetCharacterLevel(mCharacterLevel + 1);
 		didLevelUp = true;
 	}
+	WLOG(Warning, TEXT("AWPlayerState::AddExp() : %d, Current : %d, Next : %d"), GetExpRatio(), mCurrentExp, mMaxExp);
 
 	OnPlayerStateChanged.Broadcast();
 	SavePlayerData();
@@ -109,6 +104,7 @@ void AWPlayerState::SetCharacterLevel(int32 newCharacterLevel)
 
 	mCurrentStatData = gameInstance->GetCharacterData(newCharacterLevel);
 	WCHECK(nullptr != mCurrentStatData);
+	mMaxExp += mCurrentStatData->NextExp;
 
 	mCharacterLevel = newCharacterLevel;
 }

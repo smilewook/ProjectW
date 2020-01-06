@@ -130,9 +130,9 @@ void AWCharacter::SetCharacterState(ECharacterState newState)
 			SetCharacterState(ECharacterState::DEAD);
 		});
 
-		auto characterWidget = Cast<UWCharacterWidget>(mpHPBarWidget->GetUserWidgetObject());
-		WCHECK(nullptr != characterWidget);
-		characterWidget->BindCharacterStat(CharacterStat);
+// 		auto characterWidget = Cast<UWCharacterWidget>(mpHPBarWidget->GetUserWidgetObject());
+// 		WCHECK(nullptr != characterWidget);
+// 		characterWidget->BindCharacterStat(CharacterStat);
 
 		EnableInput(mpPlayerController);
 		break;

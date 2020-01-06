@@ -6,7 +6,8 @@
 
 UWGameInstance::UWGameInstance()
 {
-	FString characterDataPath = TEXT("/Game/GameData/CharacterData.CharacterData");
+	//FString characterDataPath = TEXT("/Game/GameData/CharacterData.CharacterData");
+	FString characterDataPath = TEXT("/Game/GameData/PlayerData.PlayerData");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_CHARACTER(*characterDataPath);
 	WCHECK(DT_CHARACTER.Succeeded());
 	mpCharacterTable = DT_CHARACTER.Object;

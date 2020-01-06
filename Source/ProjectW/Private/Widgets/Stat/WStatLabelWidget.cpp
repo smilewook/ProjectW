@@ -5,6 +5,8 @@
 
 #include <Components/TextBlock.h>
 
+#define LOCTEXT_NAMESPACE "Format"
+
 
 void UWStatLabelWidget::NativeConstruct()
 {
@@ -28,5 +30,35 @@ void UWStatLabelWidget::UpdateWidget(FStatInfo statInfo)
 {
 	mStatInfo = statInfo;
 
-	mpValueText->SetText(FText::AsNumber((int32)mStatInfo.CurrentValue));
+	int32 currentValue = mStatInfo.CurrentValue;
+	int32 maxValue = mStatInfo.MaxValue;
+	FText format;
+
+	switch (mStatType)
+	{
+	case EStatAttributeType::StatAttribute_Level:
+	case EStatAttributeType::StatAttribute_Attack:
+	case EStatAttributeType::StatAttribute_Defense:
+	case EStatAttributeType::StatAttribute_Critical:
+	case EStatAttributeType::StatAttribute_Dodge:
+		format = FText::AsNumber(maxValue);
+		break;
+	case EStatAttributeType::StatAttribute_Exp:
+	{
+		int32 result = currentValue <= 0 ? 0 : (float)currentValue / (float)maxValue * 100;
+		format = FText::Format(LOCTEXT("Format", "{0}%"), result);
+		break;
+	}		
+	case EStatAttributeType::StatAttribute_HP:
+	case EStatAttributeType::StatAttribute_MP:
+		format = FText::Format(LOCTEXT("Format", "{0}/{1}"), currentValue, maxValue);
+		break;
+	case EStatAttributeType::StatAttribute_None:
+	case EStatAttributeType::StatAttribute_Special:
+	case EStatAttributeType::StatAttribute_Max:
+	default:
+		break;
+	}
+
+	mpValueText->SetText(format);
 }

@@ -3,6 +3,7 @@
 
 #include "WPlayerController.h"
 #include "WCharacter.h"
+#include "WPlayerCharacter.h"
 #include "WPlayerState.h"
 #include "Enemies/WEnemy.h"
 #include "Widgets/WMainWidget.h"
@@ -24,7 +25,7 @@ void AWPlayerController::OnPossess(APawn* inPawn)
 	Super::OnPossess(inPawn);
 }
 
-void AWPlayerController::NPCKill(AWEnemy * pKilledNPC) const
+void AWPlayerController::NPCKill(AWEnemy* pKilledNPC) const
 {
 	mpPlayerState->AddExp(pKilledNPC->GetExp());
 }
@@ -41,11 +42,11 @@ void AWPlayerController::BeginPlay()
 	FInputModeGameOnly inputMode;
 	SetInputMode(inputMode);
 
-	mpMainWidget = CreateWidget<UWMainWidget>(this, mMainWidgetClass);
-	mpMainWidget->AddToViewport();
-
 	mpPlayerState = Cast<AWPlayerState>(PlayerState);
 	WCHECK(nullptr != mpPlayerState);
+
+	mpMainWidget = CreateWidget<UWMainWidget>(this, mMainWidgetClass);
+	mpMainWidget->AddToViewport();	
 
 	mpMainWidget->GetHUDWidget()->BindPlayerState(mpPlayerState);
 	mpPlayerState->OnPlayerStateChanged.Broadcast();

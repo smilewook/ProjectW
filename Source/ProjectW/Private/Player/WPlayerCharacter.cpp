@@ -8,12 +8,15 @@
 #include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
 #include "Managers/WStatManager.h"
+#include "Player/WCharacterAnimInstance.h"
+#include "Player/WPlayerState.h"
 #include "Widgets/WMainWidget.h"
 #include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Stat/WStatWidget.h"
 
 #include <WidgetBlueprintLibrary.h>
+#include <DrawDebugHelpers.h>
 
 
 AWPlayerCharacter::AWPlayerCharacter()
@@ -58,6 +61,15 @@ AWPlayerCharacter::AWPlayerCharacter()
 	{
 		GetMesh()->SetAnimInstanceClass(CHARACTER_ANIM.Class);
 	}
+
+	// 공격 애니메이션 체크
+	mIsAttacking = false;
+	// 공격 콤보
+	mMaxCombo = 2;
+	AttackEndComboState();
+	// 공격 범위 디버깅
+	mAttackRange = 50.0f;
+	mAttackRadius = 50.0f;
 	
 	// 캐릭터 콜리전.
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("WCharacter"));
@@ -118,21 +130,82 @@ void AWPlayerCharacter::SetSecondWeapon(AWItemEquipment* pNewWeapon)
 	}
 }
 
-bool AWPlayerCharacter::ModifyStatAttribute(EStatAttributeType statType, float value)
+bool AWPlayerCharacter::ModifyCurrentStatAttribute(EStatAttributeType statType, float value)
 {
-	return mpStatManager->ModifyStatAttribute(statType, value);
+	return mpStatManager->ModifyCurrentStatAttribute(statType, value);
+}
+
+bool AWPlayerCharacter::ModifyMaxStatAttribute(EStatAttributeType statType, float value)
+{
+	return mpStatManager->ModifyMaxStatAttribute(statType, value);
+}
+
+bool AWPlayerCharacter::AddExp(int32 inExp)
+{
+	auto playerState = Cast<AWPlayerState>(GetPlayerState());
+	playerState->AddExp(inExp);
+
+	return true;
 }
 
 void AWPlayerCharacter::Interact()
 {
 	if (nullptr != GetTargetActor())
 	{
-		WLOG(Warning, TEXT("TargetActor is real!"));
+		//WLOG(Warning, TEXT("TargetActor is real!"));
 		mpTargetActor->OnPickedUp(this);
 	}
 	else
 	{
-		WLOG(Warning, TEXT("TargetActor is null!"));
+		//WLOG(Warning, TEXT("TargetActor is null!"));
+	}
+}
+
+void AWPlayerCharacter::SetCharacterState(ECharacterState newState)
+{
+	WCHECK(mCurrentState != newState);
+	mCurrentState = newState;
+
+	switch (mCurrentState)
+	{
+	case ECharacterState::LOADING:
+	{
+		SetActorHiddenInGame(true);
+		bCanBeDamaged = false;
+		DisableInput(mpPlayerController);
+
+		auto playerState = Cast<AWPlayerState>(GetPlayerState());
+		WCHECK(nullptr != playerState);
+		mpStatManager->UpdateNewLevel(playerState->GetCharacterLevel());
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		bCanBeDamaged = true;
+
+		mpStatManager->OnHPIsZero.AddLambda([this]() -> void {
+			SetCharacterState(ECharacterState::DEAD);
+		});
+
+		EnableInput(mpPlayerController);
+		break;
+	}
+	case ECharacterState::DEAD:
+	{
+		SetActorEnableCollision(false);
+		GetMesh()->SetHiddenInGame(false);
+		mCharacterAnim->SetDeadAnim();
+		bCanBeDamaged = false;
+		DisableInput(mpPlayerController);
+
+		GetWorld()->GetTimerManager().SetTimer(mDeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+			mpPlayerController->RestartLevel();
+		}), mDeadTimer, false);
+		break;
+	}
+	default:
+		break;
 	}
 }
 
@@ -157,6 +230,8 @@ void AWPlayerCharacter::BeginPlay()
 	{
 		WLOG(Warning, TEXT("Create MainWidget Failed."));
 	}
+
+	SetCharacterState(ECharacterState::READY);
 }
 
 void AWPlayerCharacter::Tick(float DeltaTime)
@@ -164,11 +239,32 @@ void AWPlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AWPlayerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	mCharacterAnim = Cast<UWCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	WCHECK(nullptr != mCharacterAnim);
+
+	mCharacterAnim->OnMontageEnded.AddDynamic(this, &AWPlayerCharacter::OnAttackMontageEnded);
+	mCharacterAnim->OnNextAttackCheck.AddLambda([this]() -> void {
+		mCanNextCombo = false;
+		if (mIsComboInputOn)
+		{
+			AttackStartComboState();
+			mCharacterAnim->JumpToAttackMontageSection(mCurrentCombo);
+		}
+	});
+
+	mCharacterAnim->OnAttackHitCheck.AddUObject(this, &AWPlayerCharacter::AttackCheck);
+}
+
 void AWPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(pPlayerInputComponent);
 
 	pPlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Jump);
+	pPlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Attack);
 	pPlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::Interact);
 	pPlayerInputComponent->BindAction(TEXT("ToggleMouseCursor"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleMouseCursor);
 	pPlayerInputComponent->BindAction(TEXT("ToggleInventory"), EInputEvent::IE_Pressed, this, &AWPlayerCharacter::ToggleInventory);
@@ -259,4 +355,96 @@ void AWPlayerCharacter::Turn(float newAxisValue)
 	AddControllerYawInput(newAxisValue);
 }
 
+void AWPlayerCharacter::Attack()
+{
+	if (mIsAttacking)
+	{
+		WCHECK(FMath::IsWithinInclusive<int32>(mCurrentCombo, 1, mMaxCombo));
+		if (mCanNextCombo)
+		{
+			mIsComboInputOn = true;
+		}
+	}
+	else
+	{
+		WCHECK(mCurrentCombo == 0);
+		AttackStartComboState();
+		mCharacterAnim->PlayAttackMontage();
+		mCharacterAnim->JumpToAttackMontageSection(mCurrentCombo);
+		mIsAttacking = true;
+	}
+}
 
+void AWPlayerCharacter::OnAttackMontageEnded(UAnimMontage * pmontage, bool bInterrupted)
+{
+	WCHECK(mIsAttacking);
+	WCHECK(mCurrentCombo > 0);
+	mIsAttacking = false;
+	AttackEndComboState();
+}
+
+void AWPlayerCharacter::AttackStartComboState()
+{
+	mCanNextCombo = true;
+	mIsComboInputOn = false;
+	WCHECK(FMath::IsWithinInclusive<int32>(mCurrentCombo, 0, mMaxCombo - 1));
+	mCurrentCombo = FMath::Clamp<int32>(mCurrentCombo + 1, 1, mMaxCombo);
+}
+
+void AWPlayerCharacter::AttackEndComboState()
+{
+	mIsComboInputOn = false;
+	mCanNextCombo = false;
+	mCurrentCombo = 0;
+}
+
+void AWPlayerCharacter::AttackCheck()
+{
+	float finalAttackRange = mAttackRange;
+	if (nullptr != mpCurrentWeapon)
+	{
+		finalAttackRange = mAttackRange + mpCurrentWeapon->GetItemInfo().InteractRadius;
+	}
+
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		hitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * finalAttackRange,
+		FQuat::Identity,
+		ECollisionChannel::ECC_EngineTraceChannel2,
+		FCollisionShape::MakeSphere(50.0f),
+		params);
+
+#if ENABLE_DRAW_DEBUG
+
+	FVector traceVec = GetActorForwardVector() * finalAttackRange;
+	FVector center = GetActorLocation() + traceVec * 0.5f;
+	float halfHeight = finalAttackRange * 0.5f + mAttackRadius;
+	FQuat capsuleRot = FRotationMatrix::MakeFromZ(traceVec).ToQuat();
+	FColor drawColor = bResult ? FColor::Green : FColor::Red;
+	float debugLifeTime = 5.0f;
+
+	DrawDebugCapsule(GetWorld(),
+		center,
+		halfHeight,
+		mAttackRadius,
+		capsuleRot,
+		drawColor,
+		false,
+		debugLifeTime);
+
+#endif
+
+	if (bResult)
+	{
+		if (hitResult.Actor.IsValid())
+		{
+			WLOG(Warning, TEXT("Hit Actor Name : %s"), *hitResult.Actor->GetName());
+
+			FDamageEvent damageEvent;
+			hitResult.Actor->TakeDamage(mpStatManager->GetAttack(), damageEvent, GetController(), this);
+		}
+	}
+}

@@ -2,6 +2,7 @@
 
 
 #include "WHUDWidget.h"
+#include "Managers/WStatManager.h"
 #include "Player/WCharacterStatComponent.h"
 #include "Player/WPlayerState.h"
 #include "Widgets/WMainWidget.h"
@@ -18,57 +19,39 @@ void UWHUDWidget::InitWidget(UWMainWidget* pMainWidget)
 	}
 }
 
-void UWHUDWidget::BindCharacterStat(UWCharacterStatComponent* pCharacterStat)
+void UWHUDWidget::BindCharacterStat(UWStatManager* pStatManager)
 {
-	WCHECK(nullptr != pCharacterStat);
-	mCurrentCharacterStat = pCharacterStat;
-	pCharacterStat->OnHPChanged.AddUObject(this, &UWHUDWidget::UpdateCharacterStat);
+	if (nullptr != pStatManager)
+	{
+		mpStatManager = pStatManager;
+
+		mpStatManager->OnHPChanged.AddUObject(this, &UWHUDWidget::UpdatePlayerHP);
+		mpStatManager->OnMPChanged.AddUObject(this, &UWHUDWidget::UpdatePlayerMP);
+	}	
+}
+
+void UWHUDWidget::UpdatePlayerHP()
+{
+	mpHPProgressBar->SetPercent(mpStatManager->GetHPRatio());
+}
+
+void UWHUDWidget::UpdatePlayerMP()
+{
+	mpMPProgressBar->SetPercent(mpStatManager->GetMPRatio());
 }
 
 void UWHUDWidget::BindPlayerState(AWPlayerState* pPlayerState)
 {
-	WCHECK(nullptr != pPlayerState);
-	mCurrentPlayerState = pPlayerState;
-	pPlayerState->OnPlayerStateChanged.AddUObject(this, &UWHUDWidget::UpdatePlayerState);
-}
+	if (nullptr != pPlayerState)
+	{
+		mpPlayerState = pPlayerState;
 
-void UWHUDWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	mpHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("pbHP")));
-	WCHECK(nullptr != mpHPBar);
-
-	mpExpBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("pbExp")));
-	WCHECK(nullptr != mpExpBar);
-
-	mpPlayerName = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtPlayerName")));
-	WCHECK(nullptr != mpPlayerName);
-
-	mpPlayerLevel = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtLevel")));
-	WCHECK(nullptr != mpPlayerLevel);
-
-	mpCurrentScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtCurrentScore")));
-	WCHECK(nullptr != mpCurrentScore);
-
-	mpHighScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtHighScore")));
-	WCHECK(nullptr != mpHighScore);
-}
-
-void UWHUDWidget::UpdateCharacterStat()
-{
-	WCHECK(mCurrentCharacterStat.IsValid());
-
-	mpHPBar->SetPercent(mCurrentCharacterStat->GetHPRatio());
+		mpPlayerState->OnPlayerStateChanged.AddUObject(this, &UWHUDWidget::UpdatePlayerState);
+	}
 }
 
 void UWHUDWidget::UpdatePlayerState()
 {
-	WCHECK(mCurrentPlayerState.IsValid());
-
-	mpExpBar->SetPercent(mCurrentPlayerState->GetExpRatio());
-	mpPlayerName->SetText(FText::FromString(mCurrentPlayerState->GetPlayerName()));
-	mpPlayerLevel->SetText(FText::FromString((FString::FromInt(mCurrentPlayerState->GetCharacterLevel()))));
-	mpCurrentScore->SetText(FText::FromString((FString::FromInt(mCurrentPlayerState->GetGameScore()))));
-	mpHighScore->SetText(FText::FromString(FString::FromInt(mCurrentPlayerState->GetGameHighScore())));
+	mpNameText->SetText(FText::FromString(mpPlayerState->GetPlayerName()));
+	mpLevelText->SetText(FText::FromString((FString::FromInt(mpPlayerState->GetCharacterLevel()))));
 }

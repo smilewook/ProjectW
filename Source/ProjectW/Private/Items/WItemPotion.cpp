@@ -3,6 +3,7 @@
 
 #include "WItemPotion.h"
 #include "Player/WPlayerCharacter.h"
+#include "Player/WPlayerController.h"
 
 
 AWItemPotion::AWItemPotion()
@@ -25,7 +26,14 @@ bool AWItemPotion::OnUse(FInventorySlotInfo* const pSlotInfo)
 		FItemInfo itemInfo = GetItemInfo();
 		for (auto itemStat : itemInfo.ItemStats)
 		{
-			bSuccess = mpPlayer->ModifyStatAttribute(itemStat.Key, itemStat.Value);
+			if (itemStat.Key == EStatAttributeType::StatAttribute_Exp)
+			{
+				bSuccess = mpPlayer->AddExp(itemStat.Value);
+			}
+			else
+			{
+				bSuccess = mpPlayer->ModifyCurrentStatAttribute(itemStat.Key, itemStat.Value);
+			}
 
 			if (true == bSuccess)
 			{

@@ -17,13 +17,16 @@ struct FWCharacterData : public FTableRowBase
 	GENERATED_BODY()
 	
 public:
-	FWCharacterData() : Level(1), MaxHP(100.0f), Attack(10.0f), DropExp(10), NextExp(30) {}
+	FWCharacterData() : Level(1), MaxHP(100.0f), MaxMP(100.0f), Attack(10.0f), DropExp(10), NextExp(30) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float MaxHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float MaxMP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float Attack;

@@ -21,11 +21,7 @@ class PROJECTW_API AWPlayerState : public APlayerState
 	/* Method */
 public:
 	AWPlayerState();
-
-	int32 GetGameScore() const;
-	int32 GetGameHighScore() const;
-	int32 GetCharacterLevel() const;
-	float GetExpRatio() const;
+	
 	bool AddExp(int32 inExp);
 	void AddGameScore();
 
@@ -33,6 +29,13 @@ public:
 	void SavePlayerData();
 
 	FOnPlayerStateChangedDelegate OnPlayerStateChanged;
+
+	/* Get/Set */
+	FORCEINLINE const int32 GetGameScore()		const { return mGameScore; }
+	FORCEINLINE const int32 GetGameHighScore()	const { return mGameHighScore; }
+	FORCEINLINE const int32 GetCharacterLevel() const { return mCharacterLevel; }
+	FORCEINLINE const int32 GetExp()			const { return mCurrentExp; }
+	int32 GetExpRatio() const;
 
 private:
 	void SetCharacterLevel(int32 newCharacterLevel);
@@ -52,8 +55,12 @@ protected:
 	int32 mCharacterLevel;
 
 	UPROPERTY(Transient)
-	int32 mExp;
+	int32 mCurrentExp;
+
+	UPROPERTY(Transient)
+	int32 mMaxExp;
 
 private:
 	struct FWCharacterData* mCurrentStatData;
+
 };
