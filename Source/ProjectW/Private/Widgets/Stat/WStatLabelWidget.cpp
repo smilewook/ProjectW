@@ -62,3 +62,5 @@ void UWStatLabelWidget::UpdateWidget(FStatInfo statInfo)
 
 	mpValueText->SetText(format);
 }
+
+#undef LOCTEXT_NAMESPACE

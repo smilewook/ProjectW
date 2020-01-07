@@ -8,7 +8,10 @@
 
 
 class UWInventoryManager;
-class UWItemDestroyWidget;
+class UWTooltipWidget;
+class UBorder;
+class UImage;
+class UTextBlock;
 
 struct FInventorySlotInfo;
 
@@ -32,6 +35,8 @@ public:
 	/* Get/Set */
 	FORCEINLINE FInventorySlotInfo* const& GetSlotInfo() const { return mpSlotInfo; }
 
+	FORCEINLINE void SetTooltipWidget(UWTooltipWidget* pTooltipWidget) { mpTooltipWidget = pTooltipWidget; }
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -49,7 +54,7 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	class UBorder* mpOutline;
+	UBorder* mpOutline;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configuration | Outline")
 	FLinearColor mOnColor;
@@ -58,14 +63,14 @@ protected:
 	FLinearColor mOverColor;
 
 	UPROPERTY()
-	class UImage* mpIcon;
+	UImage* mpIcon;
 
 	UPROPERTY()
-	class UTextBlock* mpAmountText;
+	UTextBlock* mpAmountText;
 
 	FInventorySlotInfo* mpSlotInfo = nullptr;
 
 	UWInventoryManager* mpInventoryManager;
 
-	UWItemDestroyWidget* mpItemDestroy;
+	UWTooltipWidget* mpTooltipWidget = nullptr;
 };

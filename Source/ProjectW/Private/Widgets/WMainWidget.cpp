@@ -11,7 +11,8 @@
 #include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
-#include "widgets/Misc/WItemDestroyWidget.h"
+#include "Widgets/Misc/WItemDestroyWidget.h"
+#include "Widgets/Misc/WTooltipWidget.h"
 #include "Widgets/Player/WHUDWidget.h"
 #include "Widgets/Stat/WStatWidget.h"
 
@@ -53,13 +54,19 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 	{
 		mpPlayer = pPlayer;
 	}
+
+	if (mTooltipWidgetClass)
+	{
+		mpToolipWidget = CreateWidget<UWTooltipWidget>(GetWorld(), mTooltipWidgetClass);
+		mpToolipWidget->InitWidget(this, nullptr);
+	}
 	
 	// °¢ À§Á¬¿¡ ¸ÞÀÎ/ÄÁÅÙÃ÷ ¸Å´ÏÀú µî·Ï.
 	mpHUDWidget->InitWidget(this);
 	mpInventoryWidget->InitWidget(this, mpPlayer->GetInventoryManager());
 	mpItemDestroyWidget->InitWidget(this, mpPlayer->GetInventoryManager());
 	mpStatWidget->InitWidget(this, mpPlayer->GetStatManager());
-	mpEquipmentWidget->InitWidget(this, mpPlayer->GetEquipmentManager());
+	mpEquipmentWidget->InitWidget(this, mpPlayer->GetEquipmentManager());	
 
 	return true;
 }

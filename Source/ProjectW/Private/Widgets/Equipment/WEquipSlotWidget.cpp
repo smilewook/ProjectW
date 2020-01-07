@@ -2,11 +2,12 @@
 
 
 #include "WEquipSlotWidget.h"
-#include "WSlotDragDropOperation.h"
+#include "DragDropOperation/WSlotDragDropOperation.h"
 #include "Items/WItemEquipment.h"
 #include "Managers/WEquipmentManager.h"
 #include "Player/WPlayerCharacter.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
+#include "Widgets/Misc/WTooltipWidget.h"
 
 #include <Components/Border.h>
 #include <Components/Image.h>
@@ -30,9 +31,10 @@ void UWEquipSlotWidget::UpdateWidget()
 		}
 		else
 		{
-			SetToolTip(nullptr);
 			mpIcon->SetBrushFromTexture(nullptr);
 			mpIcon->SetRenderOpacity(0.0f);
+
+			SetToolTip(nullptr);
 		}
 	}
 }
@@ -49,9 +51,10 @@ void UWEquipSlotWidget::Show()
 
 void UWEquipSlotWidget::Hide()
 {
-	SetToolTip(nullptr);
 	mpIcon->SetBrushFromTexture(nullptr);
 	mpIcon->SetRenderOpacity(0.0f);
+
+	SetToolTip(nullptr);
 }
 
 void UWEquipSlotWidget::NativePreConstruct()
@@ -128,12 +131,20 @@ void UWEquipSlotWidget::NativeOnMouseEnter(const FGeometry & inGeometry, const F
 {
 	// 마우스 오버
 	mpOutline->SetBrushColor(mOverColor);
+
+	if (nullptr != mpSlotInfo->pItemClass && nullptr != mpTooltipWidget)
+	{
+		mpTooltipWidget->UpdateData(mpSlotInfo->pItemClass);
+		SetToolTip(mpTooltipWidget);
+	}
 }
 
 void UWEquipSlotWidget::NativeOnMouseLeave(const FPointerEvent & inMouseEvent)
 {
 	// 마우스 아웃
 	mpOutline->SetBrushColor(mOnColor);
+
+	SetToolTip(nullptr);
 }
 
 void UWEquipSlotWidget::NativeOnDragEnter(const FGeometry & inGeometry, const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)

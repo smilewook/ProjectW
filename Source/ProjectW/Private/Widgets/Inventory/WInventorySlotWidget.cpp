@@ -3,11 +3,12 @@
 
 #include "WInventorySlotWidget.h"
 #include "ProjectWStructure.h"
-#include "WSlotDragDropOperation.h"
+#include "DragDropOperation/WSlotDragDropOperation.h"
 #include "Items/WItemBase.h"
 #include "Managers/WInventoryManager.h"
 #include "Player/WPlayerCharacter.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
+#include "Widgets/Misc/WTooltipWidget.h"
 
 #include <Components/Border.h>
 #include <Components/Image.h>
@@ -30,8 +31,6 @@ void UWInventorySlotWidget::InitWidget(UWInventoryManager* pInventoryManager, FI
 
 		mpSlotInfo->pSlotWidget = this;
 	}
-
-	
 }
 
 void UWInventorySlotWidget::UpdateWidget()
@@ -55,9 +54,10 @@ void UWInventorySlotWidget::UpdateWidget()
 		}
 		else
 		{
-			SetToolTip(nullptr);
 			mpIcon->SetBrushFromTexture(nullptr);
 			mpAmountText->SetVisibility(ESlateVisibility::Hidden);
+
+			SetToolTip(nullptr);
 		}
 	}
 }
@@ -72,6 +72,8 @@ void UWInventorySlotWidget::Hide()
 {
 	mpIcon->SetVisibility(ESlateVisibility::Hidden);
 	mpAmountText->SetVisibility(ESlateVisibility::Hidden);
+
+	SetToolTip(nullptr);
 }
 
 void UWInventorySlotWidget::NativeConstruct()
@@ -158,7 +160,7 @@ bool UWInventorySlotWidget::NativeOnDrop(const FGeometry & inGeometry, const FDr
 void UWInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)
 {
 	// 빈 영역으로 드랍될때 호출되네..
-	WLOG(Warning, TEXT("drop cancelled!"));
+	//WLOG(Warning, TEXT("drop cancelled!"));
 
 	if (nullptr != mpSlotInfo)
 	{
@@ -170,12 +172,20 @@ void UWInventorySlotWidget::NativeOnMouseEnter(const FGeometry & inGeometry, con
 {
 	// 마우스 오버
 	mpOutline->SetBrushColor(mOverColor);
+
+	if (nullptr != mpSlotInfo->pItemClass && nullptr != mpTooltipWidget)
+	{
+		mpTooltipWidget->UpdateData(mpSlotInfo->pItemClass);
+		SetToolTip(mpTooltipWidget);
+	}
 }
 
 void UWInventorySlotWidget::NativeOnMouseLeave(const FPointerEvent & inMouseEvent)
 {
 	// 마우스 아웃
 	mpOutline->SetBrushColor(mOnColor);
+
+	SetToolTip(nullptr);
 }
 
 void UWInventorySlotWidget::NativeOnDragEnter(const FGeometry & inGeometry, const FDragDropEvent & inDragDropEvent, UDragDropOperation * inOperation)

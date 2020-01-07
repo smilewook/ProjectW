@@ -5,6 +5,7 @@
 #include "DragDropOperation/WSlotDragDropOperation.h"
 #include "Managers/WContentManagerBase.h"
 #include "Managers/WEquipmentManager.h"
+#include "Widgets/WMainWidget.h"
 #include "Widgets/Equipment/WEquipSlotWidget.h"
 
 #include <Components/Button.h>
@@ -19,16 +20,27 @@ void UWEquipmentWidget::InitWidget(UWMainWidget* pMainWidget, UWContentManagerBa
 	UWEquipmentManager* pEquipmentManager = Cast<UWEquipmentManager>(mpContentManager);
 
 	mpWeaponSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetWeaponSlot());
+	mpWeaponSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpShieldSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetShieldSlot());
+	mpShieldSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpHeadSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetHeadSlot());
+	mpHeadSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpShoulderSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetShoulderSlot());
+	mpShoulderSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpTopSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetTopSlot());
+	mpTopSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpBottomSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetBottomSlot());
+	mpBottomSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpGloveSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetGloveSlot());
+	mpGloveSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpNecklaceSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetNecklaceSlot());
+	mpNecklaceSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpEarringSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetEarringSlot());
+	mpEarringSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpRingSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetRingSlot());
+	mpRingSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 	mpBraceletSlot->InitWidget(pEquipmentManager, &pEquipmentManager->GetBraceletSlot());
+	mpBraceletSlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 }
 
 void UWEquipmentWidget::NativeConstruct()

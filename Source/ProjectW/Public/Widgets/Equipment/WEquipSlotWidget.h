@@ -10,6 +10,7 @@
 
 class AWItemEquipment;
 class UWEquipmentManager;
+class UWTooltipWidget;
 class UBorder;
 class UImage;
 class UTexture2D;
@@ -35,6 +36,8 @@ public:
 
 	/* Get/Set */
 	FORCEINLINE const EItemEquipType& GetItemEquipType() const { return mItemEquipType; }
+
+	FORCEINLINE void SetTooltipWidget(UWTooltipWidget* pTooltipWidget) { mpTooltipWidget = pTooltipWidget; }
 	
 protected:
 	virtual void NativePreConstruct() override;
@@ -79,5 +82,7 @@ protected:
 	const FEquipmentSlotInfo* mpSlotInfo = nullptr;	
 
 	UWEquipmentManager* mpEquipmentManager;	
+
+	UWTooltipWidget* mpTooltipWidget = nullptr;
 	
 };

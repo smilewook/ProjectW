@@ -5,6 +5,7 @@
 #include "WInventorySlotWidget.h"
 #include "Managers/WContentManagerBase.h"
 #include "Managers/WInventoryManager.h"
+#include "Widgets/WMainWidget.h"
 
 #include <Components/Border.h>
 #include <Components/Button.h>
@@ -34,6 +35,7 @@ bool UWInventoryWidget::CreateSlot(FInventorySlotInfo* pSlotInfo, int row, int c
 		UWInventorySlotWidget* pInventorySlot = CreateWidget<UWInventorySlotWidget>(GetWorld(), mSlotWidgetClass);
 		pInventorySlot->InitWidget(pContentManager, pSlotInfo);
 		pInventorySlot->UpdateWidget();
+		pInventorySlot->SetTooltipWidget(mpMainWidget->GetTooltipWidget());
 
 		UUniformGridSlot* pGridSlot = mpSlotPanel->AddChildToUniformGrid(pInventorySlot);
 		pGridSlot->SetRow(row);

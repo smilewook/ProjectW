@@ -14,6 +14,7 @@ class UWHUDWidget;
 class UWInventoryWidget;
 class UWItemDestroyWidget;
 class UWStatWidget;
+class UWTooltipWidget;
 
 
 /**
@@ -29,11 +30,12 @@ public:
 	bool InitWidget(AWPlayerCharacter* pPlayer);
 
 	/* Get/Set */
-	FORCEINLINE UWHUDWidget*			const& GetHUDWidget() const { return mpHUDWidget; }
-	FORCEINLINE UWInventoryWidget*		const& GetInventoryWidget() const { return mpInventoryWidget; }
-	FORCEINLINE UWItemDestroyWidget*	const& GetItemDestroyWidget() const { return mpItemDestroyWidget; }
-	FORCEINLINE UWStatWidget*			const& GetStatWidget() const { return mpStatWidget; }
-	FORCEINLINE UWEquipmentWidget*		const& GetEquipmentWidget() const { return mpEquipmentWidget; }
+	FORCEINLINE UWHUDWidget*			const& GetHUDWidget()			const { return mpHUDWidget; }
+	FORCEINLINE UWInventoryWidget*		const& GetInventoryWidget()		const { return mpInventoryWidget; }
+	FORCEINLINE UWItemDestroyWidget*	const& GetItemDestroyWidget()	const { return mpItemDestroyWidget; }
+	FORCEINLINE UWStatWidget*			const& GetStatWidget()			const { return mpStatWidget; }
+	FORCEINLINE UWEquipmentWidget*		const& GetEquipmentWidget()		const { return mpEquipmentWidget; }
+	FORCEINLINE UWTooltipWidget*		const& GetTooltipWidget()		const { return mpToolipWidget; }
 
 protected:
 	virtual void NativeConstruct() override;
@@ -59,4 +61,10 @@ protected:
 
 	UPROPERTY()
 	UWEquipmentWidget* mpEquipmentWidget;
+
+	UPROPERTY()
+	UWTooltipWidget* mpToolipWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	TSubclassOf<UWTooltipWidget> mTooltipWidgetClass;
 };
