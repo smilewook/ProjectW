@@ -11,6 +11,7 @@
 #include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
+#include "Widgets/Misc/WAcquireItemWidget.h"
 #include "Widgets/Misc/WItemDestroyWidget.h"
 #include "Widgets/Misc/WTooltipWidget.h"
 #include "Widgets/Player/WHUDWidget.h"
@@ -24,28 +25,9 @@ void UWMainWidget::NativeConstruct()
 
 bool UWMainWidget::NativeOnDrop(const FGeometry& inGeometry, const FDragDropEvent& inDragDropEvent, UDragDropOperation* inOperation)
 {
-	Super::NativeOnDrop(inGeometry, inDragDropEvent, inOperation);
+	WLOG(Warning, TEXT("UWMainWidget::NativeOnDrop() ?"));
 
-	// 인벤토리 슬롯이 메인에 드랍되었을 경우 destroy 할 것 인가에 대해 구현.
-	// 인벤토리 밖으로 슬롯이 드랍될때 확인 가능한 다른 방법은?.
-
-	if (UWSlotDragDropOperation* pSlotOperation = Cast<UWSlotDragDropOperation>(inOperation))
-	{
-		UWInventorySlotWidget* pFromSlot = Cast<UWInventorySlotWidget>(pSlotOperation->GetDraggedSlot());
-		FInventorySlotInfo* pFromSlotInfo = pFromSlot->GetSlotInfo();
-		if (nullptr != pFromSlotInfo->pItemClass)
-		{
-			mpItemDestroyWidget->Show(pFromSlotInfo);
-			return true;
-		}		
-		return false;
-	}
-	else
-	{
-		WLOG(Warning, TEXT("UWMainWidget::NativeOnDrop() ?"));
-
-		return false;
-	}	
+	return false;
 }
 
 bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
@@ -55,10 +37,15 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 		mpPlayer = pPlayer;
 	}
 
-	if (mTooltipWidgetClass)
+	if (nullptr != mTooltipWidgetClass)
 	{
 		mpToolipWidget = CreateWidget<UWTooltipWidget>(GetWorld(), mTooltipWidgetClass);
 		mpToolipWidget->InitWidget(this, nullptr);
+	}
+
+	if (nullptr != mAcquireWidgetClass)
+	{
+		//mpAcquireItemWidget = CreateWidget<UWAcquireItemWidget>(GetWorld(), mAcquireWidgetClass);
 	}
 	
 	// 각 위젯에 메인/컨텐츠 매니저 등록.
@@ -69,4 +56,36 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 	mpEquipmentWidget->InitWidget(this, mpPlayer->GetEquipmentManager());	
 
 	return true;
+}
+
+void UWMainWidget::AddAcquireItemQueue(AWItemBase* newItemClass, int32 amount)
+{
+	if (mAcquireItemsQueue.Num() > 0)
+	{
+		FInventorySlotInfo inventorySlotInfo;
+		inventorySlotInfo.pItemClass = newItemClass;
+		inventorySlotInfo.Amount = amount;
+		mAcquireItemsQueue.Emplace(inventorySlotInfo);
+	}
+	else
+	{
+		FInventorySlotInfo inventorySlotInfo;
+		inventorySlotInfo.pItemClass = newItemClass;
+		inventorySlotInfo.Amount = amount;
+		mAcquireItemsQueue.Emplace(inventorySlotInfo);
+		
+		mpAcquireItemWidget->InitWidget(newItemClass, amount, mAcquireDuration, this);
+		mpAcquireItemWidget->Show();
+	}
+}
+
+void UWMainWidget::EndAcquireItemMessage()
+{
+	mAcquireItemsQueue.RemoveAt(0);
+
+	if (mAcquireItemsQueue.Num() > 0)
+	{
+		mpAcquireItemWidget->InitWidget(mAcquireItemsQueue[0].pItemClass, mAcquireItemsQueue[0].Amount, mAcquireDuration, this);
+		mpAcquireItemWidget->Show();
+	}
 }

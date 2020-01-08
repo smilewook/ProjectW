@@ -35,6 +35,7 @@ public:
 	void SwapItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void CombineItem(const int32& targetSlotIndex, const int32& fromSlotIndex);
 	void ThrowAwayItem(const int32& slotIndex);
+	void ShowAcquireItem(AWItemBase* newItemClass, int32 amount = 1);
 
 	/* Get/Set */
 	FORCEINLINE const TArray<FInventorySlotInfo>& GetSlots() const { return mSlots; }

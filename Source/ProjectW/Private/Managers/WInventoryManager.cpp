@@ -74,6 +74,8 @@ bool UWInventoryManager::AddItem(AWItemBase* newItemClass, int32 amount)
 			mSlots[slotIndex].Amount = amount;
 			mSlots[slotIndex].pSlotWidget->UpdateWidget();
 
+			ShowAcquireItem(newItemClass, amount);
+
 			return true;
 		}
 	}	
@@ -165,6 +167,14 @@ void UWInventoryManager::ThrowAwayItem(const int32 & slotIndex)
 	UWItemDestroyWidget* itemDestroyWidget = mpWidget->GetMainWidget()->GetItemDestroyWidget();
 	FInventorySlotInfo* slotInfo = &(mSlots[slotIndex]);
 	itemDestroyWidget->Show(slotInfo);
+}
+
+void UWInventoryManager::ShowAcquireItem(AWItemBase* newItemClass, int32 amount)
+{
+	if (nullptr != mpWidget->GetMainWidget())
+	{
+		mpWidget->GetMainWidget()->AddAcquireItemQueue(newItemClass, amount);
+	}
 }
 
 void UWInventoryManager::BeginPlay()

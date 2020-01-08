@@ -3,12 +3,15 @@
 #pragma once
 
 #include "ProjectW.h"
+#include "ProjectWStructure.h"
 #include "Blueprint/UserWidget.h"
 #include "WMainWidget.generated.h"
 
 
+class AWItemBase;
 class AWPlayerCharacter;
 
+class UWAcquireItemWidget;
 class UWEquipmentWidget;
 class UWHUDWidget;
 class UWInventoryWidget;
@@ -28,6 +31,9 @@ class PROJECTW_API UWMainWidget : public UUserWidget
 	/* Methods */
 public:
 	bool InitWidget(AWPlayerCharacter* pPlayer);
+
+	void AddAcquireItemQueue(AWItemBase* newItemClass, int32 amount);
+	void EndAcquireItemMessage();
 
 	/* Get/Set */
 	FORCEINLINE UWHUDWidget*			const& GetHUDWidget()			const { return mpHUDWidget; }
@@ -65,6 +71,20 @@ protected:
 	UPROPERTY()
 	UWTooltipWidget* mpToolipWidget;
 
+	UPROPERTY()
+	UWAcquireItemWidget* mpAcquireItemWidget;
+
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWTooltipWidget> mTooltipWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	TSubclassOf<UWAcquireItemWidget> mAcquireWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	float mAcquireDuration;
+
+private:
+	TArray<FInventorySlotInfo> mAcquireItemsQueue;
+
+	
 };
