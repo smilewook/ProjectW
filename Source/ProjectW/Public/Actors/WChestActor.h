@@ -4,7 +4,7 @@
 
 #include "ProjectW.h"
 #include "GameFramework/Actor.h"
-#include "WPickupActor.generated.h"
+#include "WChestActor.generated.h"
 
 
 class AWItemBase;
@@ -12,28 +12,30 @@ class AWPlayerCharacter;
 
 class UMaterial;
 class UWidgetComponent;
+class UWLootingManager;
 
 
 UCLASS()
-class PROJECTW_API AWPickupActor : public AActor
+class PROJECTW_API AWChestActor : public AActor
 {
 	GENERATED_BODY()
 	
 	/* Methods */
-public:
-	AWPickupActor();
-
-	virtual void OnConstruction(const FTransform& transform) override;
+public:	
+	AWChestActor();
 
 	void UpdateText();
 	void OnPickedUp(AWPlayerCharacter* pPlayer);
 	void OnInteract(AWPlayerCharacter* pPlayer);
 	void UnInteract();
+	void AddItemClasses(const TArray<TSubclassOf<AWItemBase>>& itemClasses);
 
 	/* Get/Set */
-	FORCEINLINE AWPlayerCharacter* const& GetInteractionPlayer() const { return mpInteractionPlayer; }
+	FORCEINLINE USphereComponent*	const& GetSphere()				const { return mpTrigger; }
+	FORCEINLINE UWidgetComponent*	const& GetPickupText()			const { return mpPickupText; }
+	FORCEINLINE AWPlayerCharacter*	const& GetInteractionPlayer()	const { return mpInteractionPlayer; }
 
-	FORCEINLINE void SetInteractionPlayer(AWPlayerCharacter* pPlayer) { WCHECK(nullptr != pPlayer); mpInteractionPlayer = pPlayer;  }
+	FORCEINLINE void SetInteractionPlayer(AWPlayerCharacter* pPlayer) { WCHECK(nullptr != pPlayer); mpInteractionPlayer = pPlayer; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -63,29 +65,27 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UWidgetComponent* mpPickupText;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Configuration | Material")
-	UStaticMeshComponent* mpStaticMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UWLootingManager* mpLootingManager;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration | Material")
+	UStaticMeshComponent* mpStaticMesh;	
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Material")
 	UMaterial* mpDefaultMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration | Material")
-	UMaterial* mpHoveredMaterial;	
+	UMaterial* mpHoveredMaterial;
 
-	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
-	int32 mID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configuration | Data")
+	TArray<TSubclassOf<AWItemBase>> mItemClasses;
 
-	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
-	TSubclassOf<AWItemBase> mItemClass;
-
-	UPROPERTY(EditAnywhere, Category = "Configuration | Data")
-	int32 mAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configuration | Data")
+	FName mName;
 
 	UMaterialInterface* mpOriginalMaterial;
 
 	AWPlayerCharacter* mpInteractionPlayer;
 
-private:
-	
 };

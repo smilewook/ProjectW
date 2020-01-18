@@ -3,16 +3,19 @@
 
 #include "WPlayerCharacter.h"
 #include "WPlayerController.h"
+#include "Actors/WChestActor.h"
 #include "Actors/WPickupActor.h"
 #include "Items/WItemEquipment.h"
 #include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
+#include "Managers/WLootingManager.h"
 #include "Managers/WStatManager.h"
 #include "Player/WCharacterAnimInstance.h"
 #include "Player/WPlayerState.h"
 #include "Widgets/WMainWidget.h"
 #include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
+#include "Widgets/Looting/WLootingWidget.h"
 #include "Widgets/Stat/WStatWidget.h"
 
 #include <WidgetBlueprintLibrary.h>
@@ -153,7 +156,8 @@ void AWPlayerCharacter::Interact()
 	if (nullptr != GetTargetActor())
 	{
 		//WLOG(Warning, TEXT("TargetActor is real!"));
-		mpTargetActor->OnPickedUp(this);
+		// AActor를 상속받은 액터가 동작하게 수정..
+		Cast<AWChestActor>(mpTargetActor)->OnPickedUp(this);
 	}
 	else
 	{

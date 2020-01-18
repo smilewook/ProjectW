@@ -16,6 +16,7 @@ class UWEquipmentWidget;
 class UWHUDWidget;
 class UWInventoryWidget;
 class UWItemDestroyWidget;
+class UWLootingWidget;
 class UWStatWidget;
 class UWTooltipWidget;
 
@@ -36,11 +37,12 @@ public:
 	void EndAcquireItemMessage();
 
 	/* Get/Set */
+	FORCEINLINE UWEquipmentWidget*		const& GetEquipmentWidget()		const { return mpEquipmentWidget; }
 	FORCEINLINE UWHUDWidget*			const& GetHUDWidget()			const { return mpHUDWidget; }
 	FORCEINLINE UWInventoryWidget*		const& GetInventoryWidget()		const { return mpInventoryWidget; }
 	FORCEINLINE UWItemDestroyWidget*	const& GetItemDestroyWidget()	const { return mpItemDestroyWidget; }
+	FORCEINLINE UWLootingWidget*		const& GetLootingWidget()		const { return mpLootingWidget; }
 	FORCEINLINE UWStatWidget*			const& GetStatWidget()			const { return mpStatWidget; }
-	FORCEINLINE UWEquipmentWidget*		const& GetEquipmentWidget()		const { return mpEquipmentWidget; }
 	FORCEINLINE UWTooltipWidget*		const& GetTooltipWidget()		const { return mpToolipWidget; }
 
 protected:
@@ -73,6 +75,9 @@ protected:
 
 	UPROPERTY()
 	UWAcquireItemWidget* mpAcquireItemWidget;
+
+	UPROPERTY()
+	UWLootingWidget* mpLootingWidget;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWTooltipWidget> mTooltipWidgetClass;

@@ -14,6 +14,7 @@ class AWPlayerController;
 class UWCharacterAnimInstance;
 class UWEquipmentManager;
 class UWInventoryManager;
+class UWLootingManager;
 class UWStatManager;
 class UWMainWidget;
 
@@ -45,13 +46,14 @@ public:
 	
 	/* Get/Set */
 	FORCEINLINE UWMainWidget*		const& GetMainWidget()			const { return mpMainWidget; }
-	FORCEINLINE UWInventoryManager* const& GetInventoryManager()	const { return mpInventoryManager; }
-	FORCEINLINE UWStatManager*		const& GetStatManager()			const { return mpStatManager; }
 	FORCEINLINE UWEquipmentManager* const& GetEquipmentManager()	const { return mpEquipmentManager; }
+	FORCEINLINE UWInventoryManager* const& GetInventoryManager()	const { return mpInventoryManager; }
+	FORCEINLINE UWLootingManager*	const& GetLootingManager()		const { return mpLootingManager; }
+	FORCEINLINE UWStatManager*		const& GetStatManager()			const { return mpStatManager; }	
 	
-	FORCEINLINE AWPickupActor*		const& GetTargetActor()			const { return mpTargetActor; }
+	FORCEINLINE AActor*				const& GetTargetActor()			const { return mpTargetActor; }
 
-	FORCEINLINE void SetTargetActor(AWPickupActor* pTargetActor) { mpTargetActor = pTargetActor; }
+	FORCEINLINE void SetTargetActor(AActor* pTargetActor) { mpTargetActor = pTargetActor; }
 	void SetCharacterState(ECharacterState newState);
 
 protected:
@@ -115,9 +117,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "ContentsManager")
 	UWEquipmentManager* mpEquipmentManager;
 
+	UPROPERTY(VisibleAnywhere, Category = "ContentsManager")
+	UWLootingManager* mpLootingManager;
+
 	// 인터렉션
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
-	AWPickupActor* mpTargetActor;
+	AActor* mpTargetActor;
 
 private:
 	UPROPERTY()

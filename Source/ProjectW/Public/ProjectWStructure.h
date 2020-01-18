@@ -14,6 +14,7 @@ class AWItemEquipment;
 
 class UWEquipSlotWidget;
 class UWInventorySlotWidget;
+class UWLootingSlotWidget;
 
 
 USTRUCT(BlueprintType)
@@ -151,4 +152,22 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "EquipmentSlotInfo")
 	UWEquipSlotWidget* pSlotWidget;
+};
+
+USTRUCT(BlueprintType)
+struct FLootingSlotInfo
+{
+	GENERATED_BODY()
+
+	FLootingSlotInfo() : ItemClass(nullptr), Amount(0) {};
+
+	FLootingSlotInfo(TSubclassOf<AWItemBase> itemClass, int32 amount) :
+		ItemClass(itemClass), Amount(amount) {};
+
+public:
+	UPROPERTY(EditAnywhere, Category = "LootingSlotInfo")
+	TSubclassOf<AWItemBase> ItemClass;
+
+	UPROPERTY(EditAnywhere, Category = "LootingSlotInfo")
+	int32 Amount;
 };

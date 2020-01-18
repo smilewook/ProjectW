@@ -74,7 +74,7 @@ bool UWInventoryManager::AddItem(AWItemBase* newItemClass, int32 amount)
 			mSlots[slotIndex].Amount = amount;
 			mSlots[slotIndex].pSlotWidget->UpdateWidget();
 
-			ShowAcquireItem(newItemClass, amount);
+			//ShowAcquireItem(newItemClass, amount);
 
 			return true;
 		}

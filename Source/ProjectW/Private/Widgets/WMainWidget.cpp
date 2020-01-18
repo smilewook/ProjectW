@@ -6,11 +6,13 @@
 #include "Items/WItemBase.h"
 #include "Managers/WEquipmentManager.h"
 #include "Managers/WInventoryManager.h"
+#include "Managers/WLootingManager.h"
 #include "Managers/WStatManager.h"
 #include "Player/WPlayerCharacter.h"
 #include "Widgets/Equipment/WEquipmentWidget.h"
 #include "Widgets/Inventory/WInventoryWidget.h"
 #include "Widgets/Inventory/WInventorySlotWidget.h"
+#include "Widgets/Looting/WLootingWidget.h"
 #include "Widgets/Misc/WAcquireItemWidget.h"
 #include "Widgets/Misc/WItemDestroyWidget.h"
 #include "Widgets/Misc/WTooltipWidget.h"
@@ -54,6 +56,7 @@ bool UWMainWidget::InitWidget(AWPlayerCharacter* pPlayer)
 	mpItemDestroyWidget->InitWidget(this, mpPlayer->GetInventoryManager());
 	mpStatWidget->InitWidget(this, mpPlayer->GetStatManager());
 	mpEquipmentWidget->InitWidget(this, mpPlayer->GetEquipmentManager());	
+	mpLootingWidget->InitWidget(this, nullptr);
 
 	return true;
 }

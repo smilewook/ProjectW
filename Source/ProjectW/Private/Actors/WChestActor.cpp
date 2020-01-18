@@ -1,21 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WPickupActor.h"
+#include "WChestActor.h"
 #include "ProjectWStructure.h"
 #include "Items/WItemBase.h"
-#include "Managers/WInventoryManager.h"
+#include "Managers/WLootingManager.h"
 #include "Player/WCharacter.h"
 #include "Player/WPlayerCharacter.h"
+#include "Widgets/WMainWidget.h"
+#include "Widgets/Looting/WLootingWidget.h"
 #include "Widgets/Misc/WPickupTextWidget.h"
 
 #include <TextBlock.h>
 #include <WidgetComponent.h>
 
 
-AWPickupActor::AWPickupActor()
+AWChestActor::AWChestActor()
 {
- 	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = false;
 
 	mpSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	RootComponent = mpSceneComponent;
@@ -52,93 +54,82 @@ AWPickupActor::AWPickupActor()
 		mpPickupText->SetVisibility(false);
 		mpPickupText->SetupAttachment(mpStaticMesh);
 	}
-	
+
+	mpLootingManager = CreateDefaultSubobject<UWLootingManager>(TEXT("LootingManager"));
 }
 
-void AWPickupActor::OnConstruction(const FTransform& transform)
-{
-	Super::OnConstruction(transform);
-	
-	// 아이템 속성에 접근해서 액터에 적용.
-	if (nullptr != mItemClass)
-	{
-		FItemInfo ItemInfo = mItemClass.GetDefaultObject()->GetItemInfo();
-
-		mpOriginalMaterial = mpStaticMesh->GetMaterial(0);
-
-		mpStaticMesh->SetStaticMesh(ItemInfo.pStaticMesh);
-		mpStaticMesh->SetRelativeScale3D(ItemInfo.MeshScale);
-
-		mpTrigger->SetSphereRadius(ItemInfo.InteractRadius);
-	}
-}
-
-void AWPickupActor::UpdateText()
+void AWChestActor::UpdateText()
 {
 	UWPickupTextWidget* pPickupTextWidget = Cast<UWPickupTextWidget>(mpPickupText->GetUserWidgetObject());
 	if (nullptr != pPickupTextWidget)
 	{
-		FName itemName = mItemClass.GetDefaultObject()->GetItemInfo().Name;
- 		pPickupTextWidget->GetNameText()->SetText(FText::FromName(itemName));
+		pPickupTextWidget->GetNameText()->SetText(FText::FromName(mName));
 	}
 }
 
-void AWPickupActor::OnPickedUp(AWPlayerCharacter* pPlayer)
+void AWChestActor::OnPickedUp(AWPlayerCharacter* pPlayer)
 {
+	if (false == mpLootingManager->GetIsOpen())
+	{
+		UWLootingWidget* pLootingWidget = GetInteractionPlayer()->GetMainWidget()->GetLootingWidget();
+		mpLootingManager->InitManager(pLootingWidget);
+		mpLootingManager->Open();
+	}
 	if (nullptr != pPlayer)
 	{
-		// 인벤토리에 바로 넣기.
-		AWItemBase* pItemClass = mItemClass.GetDefaultObject();
-		bool bSuccess = pPlayer->GetInventoryManager()->AddItem(pItemClass, mAmount);
-		if (true == bSuccess)
+		// 적이 아이템을 드랍할 경우..
+		if (mItemClasses.Num() > 0)
 		{
-			WLOG(Warning, TEXT("AWPickupActor::OnPickedUp Success!! : %s"), *GetName());
-			pPlayer->GetInventoryManager()->ShowAcquireItem(pItemClass, mAmount);
-
-			Destroy();
+			WLOG(Warning, TEXT("AWChestActor::OnPickedUp Open Looting.. : %s"), *GetName());
+		}
+		else
+		{
+			WLOG(Warning, TEXT("AWChestActor::OnPickedUp Failed."));
 		}
 	}
 }
 
-void AWPickupActor::OnInteract(AWPlayerCharacter* pPlayer)
+void AWChestActor::OnInteract(AWPlayerCharacter* pPlayer)
 {
 	// 현재 액터의 인터렉션 플레이어 설정.
-	SetInteractionPlayer(pPlayer);	
+	SetInteractionPlayer(pPlayer);
 	GetInteractionPlayer()->SetTargetActor(this);
-	
-	// 루팅 위젯이 있으면 세팅 후 오픈.
-	//UWidget_Base* pWidget = GetInteractionUser()->GetMainWidget()->GetPickupWidget();
-	//mpPickup->InitComponent(pWidget);
-	//mpPickup->Open();
-	
 }
 
-void AWPickupActor::UnInteract()
+void AWChestActor::UnInteract()
 {
-	if (nullptr != mpInteractionPlayer)
+	GetInteractionPlayer()->SetTargetActor(nullptr);
+	SetInteractionPlayer(nullptr);
+
+	if (true == mpLootingManager->GetIsOpen())
 	{
-		GetInteractionPlayer()->DelTargetActor();
-		mpInteractionPlayer = nullptr;
+		mpLootingManager->Close();
 	}
 }
 
-void AWPickupActor::BeginPlay()
+void AWChestActor::AddItemClasses(const TArray<TSubclassOf<AWItemBase>>& itemClasses)
 {
-	Super::BeginPlay();
-
-	OnActivate();
-
-	mpTrigger->OnComponentBeginOverlap.AddDynamic(this, &AWPickupActor::OnOverlapBegin);
-	mpTrigger->OnComponentEndOverlap.AddDynamic(this, &AWPickupActor::OnOverlapEnd);	
+	for (auto itemClass : itemClasses)
+	{
+		mpLootingManager->AddItem(itemClass);
+	}
 }
 
-void AWPickupActor::OnActivate()
+void AWChestActor::BeginPlay()
+{
+	OnActivate();
+
+	mpTrigger->OnComponentBeginOverlap.AddDynamic(this, &AWChestActor::OnOverlapBegin);
+	mpTrigger->OnComponentEndOverlap.AddDynamic(this, &AWChestActor::OnOverlapEnd);
+}
+
+void AWChestActor::OnActivate()
 {
 	UpdateText();
 	mpPickupText->SetVisibility(true);
 }
 
-void AWPickupActor::OnOverlapBegin(UPrimitiveComponent * overlappedComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult)
+void AWChestActor::OnOverlapBegin(UPrimitiveComponent * overlappedComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult & sweepResult)
 {
 	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(otherActor);
 	WCHECK(::IsValid(pPlayer));
@@ -149,7 +140,7 @@ void AWPickupActor::OnOverlapBegin(UPrimitiveComponent * overlappedComp, AActor 
 	}
 }
 
-void AWPickupActor::OnOverlapEnd(UPrimitiveComponent * overlappedComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex)
+void AWChestActor::OnOverlapEnd(UPrimitiveComponent * overlappedComp, AActor * otherActor, UPrimitiveComponent * otherComp, int32 otherBodyIndex)
 {
 	AWPlayerCharacter* pPlayer = Cast<AWPlayerCharacter>(otherActor);
 	WCHECK(::IsValid(pPlayer));
@@ -160,14 +151,15 @@ void AWPickupActor::OnOverlapEnd(UPrimitiveComponent * overlappedComp, AActor * 
 	}
 }
 
-void AWPickupActor::OnOvered()
+void AWChestActor::OnOvered()
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Hand;
 	mpStaticMesh->SetMaterial(0, mpHoveredMaterial);
 }
 
-void AWPickupActor::OnOuted()
+void AWChestActor::OnOuted()
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->CurrentMouseCursor = EMouseCursor::Default;
 	mpStaticMesh->SetMaterial(0, mpOriginalMaterial);
 }
+
